@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: report-rocket-web
+    env: python
+    region: frankfurt   # pick the closest region to your users
+    plan: starter       # $7/mo; bump to standard for 1GB RAM
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers=2 --threads=4 --timeout=120
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: OPENAI_API_KEY
+        sync: false        # set this in the dashboard after first deploy
+      - key: FLASK_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: report-rocket-db
+          property: connectionString
+    healthCheckPath: /
+    autoDeploy: true
+    # After the first successful build, create DB tables:
+    postDeployCommand: |
+      python -c "from app import app, db;
+from models import *; 
+app.app_context().push(); 
+db.create_all(); 
+print('DB tables created')"
+
+databases:
+  - name: report-rocket-db
+    plan: starter   # $7/mo

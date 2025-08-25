@@ -1,16 +1,31 @@
+# models.py
+from datetime import datetime
+from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_login import UserMixin
 
 db = SQLAlchemy()
 
 class User(UserMixin, db.Model):
-    id           = db.Column(db.Integer, primary_key=True)
-    email        = db.Column(db.String(150), unique=True, nullable=False)
-    password_hash= db.Column(db.String(256), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), unique=True, nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+    def set_password(self, pw): self.password_hash = generate_password_hash(pw)
+    def check_password(self, pw): return check_password_hash(self.password_hash, pw)
 
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+class ClassProfile(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    class_name = db.Column(db.String(255), nullable=False)
+    subject    = db.Column(db.String(255), nullable=False)
+    max_words  = db.Column(db.Integer, default=100)
+
+    # Stores the whole table (list of row dicts)
+    rows_json  = db.Column(db.JSON, default=list)
+
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref='class_profiles')

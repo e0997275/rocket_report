@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Pricing for Teachers & Schools | MyApp{% endblock %}
+{% block content %}
+<link rel="canonical" href="{{ url_for('pricing', _external=True) }}">
+<meta name="description" content="Teachers start free, then pay-as-you-go from as little as £2.50. School trials available.">
+
+<style>
+  .pricing-hero { background:#f5f7ff; border-radius:16px; }
+  .price-card .price { font-size:2rem; font-weight:700; }
+  .price-card small { color:#6c757d; }
+  .tick { color:#198754; }
+</style>
+
+<div class="container py-4">
+  <section class="pricing-hero p-4 p-md-5 mb-4">
+    <h1 class="mb-2">Teachers</h1>
+    <p class="lead mb-1">Get <strong>10 reports free</strong> when you sign up, then pay as you go from as little as £2.50.</p>
+    <p class="mb-0">Refer your pals and get more reports free.</p>
+  </section>
+
+  <div class="mb-3 d-none">
+    <!-- placeholder if you later add currency switching -->
+    <label class="me-2">Currency:</label>
+    <select class="form-select form-select-sm" style="width: 10rem;">
+      <option selected>GBP (£)</option>
+    </select>
+  </div>
+
+  <div class="row g-4">
+    <!-- £2.50 pack -->
+    <div class="col-md-4">
+      <div class="price-card border rounded p-4 h-100">
+        <div class="price">£2.50</div>
+        <div class="mb-2"><small>Pack</small></div>
+        <ul class="list-unstyled small mb-3">
+          <li><span class="tick">✔</span> Reports in pack: <strong>50</strong></li>
+          <li><span class="tick">✔</span> Cost per report: <strong>5p</strong></li>
+          <li><span class="tick">✔</span> Approx per class: <strong>£1.50</strong></li>
+        </ul>
+        <a href="{{ url_for('report') }}" class="btn btn-primary w-100">Get started</a>
+      </div>
+    </div>
+    <!-- £5 pack -->
+    <div class="col-md-4">
+      <div class="price-card border rounded p-4 h-100">
+        <div class="price">£5</div>
+        <div class="mb-2"><small>Pack</small></div>
+        <ul class="list-unstyled small mb-3">
+          <li><span class="tick">✔</span> Reports in pack: <strong>150</strong></li>
+          <li><span class="tick">✔</span> Cost per report: <strong>4p</strong></li>
+          <li><span class="tick">✔</span> Approx per class: <strong>£1.00</strong></li>
+        </ul>
+        <a href="{{ url_for('report') }}" class="btn btn-primary w-100">Choose pack</a>
+      </div>
+    </div>
+    <!-- £10 pack -->
+    <div class="col-md-4">
+      <div class="price-card border rounded p-4 h-100">
+        <div class="price">£10</div>
+        <div class="mb-2"><small>Pack</small></div>
+        <ul class="list-unstyled small mb-3">
+          <li><span class="tick">✔</span> Reports in pack: <strong>500</strong></li>
+          <li><span class="tick">✔</span> Cost per report: <strong>2p</strong></li>
+          <li><span class="tick">✔</span> Approx per class: <strong>£0.60</strong></li>
+        </ul>
+        <a href="{{ url_for('report') }}" class="btn btn-primary w-100">Best value</a>
+      </div>
+    </div>
+  </div>
+
+  <hr class="my-5">
+
+  <section>
+    <h2 class="h4 mb-3">Schools</h2>
+    <p class="mb-3">Want your whole staff on board? We offer discounted school packs and a free trial for one full term.</p>
+    <a class="btn btn-outline-primary" href="{{ url_for('school') }}">School trial & pricing</a>
+  </section>
+</div>
+
+<!-- FAQ schema to help rich results -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"Do teachers get free reports?","acceptedAnswer":{"@type":"Answer","text":"Yes. You get 10 reports free when you sign up."}},
+    {"@type":"Question","name":"Is there a school trial?","acceptedAnswer":{"@type":"Answer","text":"Yes, schools can trial the service free for one term."}}
+  ]
+}
+</script>
+{% endblock %}

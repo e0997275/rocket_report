@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Finish school reports fast | MyApp{% endblock %}
+{% block content %}
+<style>
+  .hero {
+    background: #0b1f4d; /* darker so headline pops */
+    color:#fff;
+    border-radius:16px;
+  }
+  .hero h1 { font-weight:700; letter-spacing:.2px; }
+  .hero .lead { opacity:.95; }
+  .section-pad { padding: 3rem 0; }
+  .feature-icon { font-size:2rem; }
+</style>
+
+<!-- SEO -->
+<link rel="canonical" href="{{ url_for('home', _external=True) }}">
+<meta name="description" content="Write polished, personalized school reports in minutes. Free teacher starter pack, pay‑as‑you‑go pricing, and school trials.">
+
+<div class="container">
+  <section class="hero p-5 mb-4">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-7">
+        <h1 class="mb-3">Ready to finish reports—fast?</h1>
+        <p class="lead mb-4">Create clear, supportive comments in seconds. Start free, then pay as you go. Schools can trial for a full term.</p>
+        <div class="d-flex gap-2">
+          <a class="btn btn-light btn-lg" href="{{ url_for('report') }}">Start writing</a>
+          <a class="btn btn-outline-light btn-lg" href="{{ url_for('pricing') }}">See pricing</a>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <img class="img-fluid rounded shadow" alt="Create reports quickly" src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b?q=80&w=1200&auto=format&fit=crop" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Simple features -->
+  <section class="section-pad">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="p-4 border rounded h-100">
+          <div class="feature-icon mb-2">⚡</div>
+          <h3 class="h5">Fast & consistent</h3>
+          <p>Generate high‑quality comments aligned to your class data and word limits.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 border rounded h-100">
+          <div class="feature-icon mb-2">🧰</div>
+          <h3 class="h5">Teacher tools</h3>
+          <p>Tick‑box performance, custom notes, bulk generate, copy & export in one click.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 border rounded h-100">
+          <div class="feature-icon mb-2">🏫</div>
+          <h3 class="h5">School‑ready</h3>
+          <p>Try a full term free. Onboard staff quickly and standardise report quality.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- JSON‑LD for SEO -->
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"SoftwareApplication",
+  "name":"MyApp",
+  "applicationCategory":"EducationalApplication",
+  "operatingSystem":"Web",
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"GBP","description":"Free starter for teachers; pay-as-you-go packs"}
+}
+</script>
+{% endblock %}

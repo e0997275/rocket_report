@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+{% block title %}Write Report{% endblock %}
+{% block content %}
+<style>
+  /* Buttons: pastel, no bold */
+  .btn{
+    font-family:'Poppins',sans-serif;
+    font-weight:400;
+    border-radius:20px;
+    padding:.35rem .9rem;
+    transition:all .25s ease-in-out;
+    box-shadow:0 2px 6px rgba(0,0,0,.05);
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.1);}
+  .btn-primary{background:#6fa8dc;border:none;color:#fff;}
+  .btn-primary:hover{background:#85b9e6;}
+  .btn-success{background:#93c47d;border:none;color:#fff;}
+  .btn-success:hover{background:#a8d08d;}
+  .btn-outline-secondary{border:2px solid #999;color:#666;}
+  .btn-outline-secondary:hover{background:#999;color:#fff;}
+  .btn-outline-warning{border:2px solid #f6b26b;color:#f6b26b;}
+  .btn-outline-warning:hover{background:#f6b26b;color:#fff;}
+
+  /* Controls row */
+  .controls-row{
+    background:#fffbe6;border-radius:.25rem;padding:.45rem .6rem;margin-bottom:.6rem;
+    display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;
+  }
+  .controls-row label{margin-bottom:0;font-weight:600;font-size:.85rem;}
+  .controls-row input[type="text"]{border:1px solid #ccc;height:1.9rem;font-size:.82rem;padding:0 .45rem;}
+  .controls-row .right-pack{margin-left:auto;display:flex;align-items:center;gap:.6rem;}
+  .controls-row .form-range{width:9vw;min-width:120px;}
+
+  /* Table (always full width) */
+  #reportTable{width:100%;border-collapse:collapse;table-layout:fixed;}
+  #reportTable th{
+    font-size:.75rem;font-weight:700;padding:.3rem;text-align:center;color:#000;
+  }
+  #reportTable td{
+    border:1px solid #dee2e6;padding:.25rem .4rem;text-align:left;vertical-align:top;
+    font-size:.8rem;font-weight:400;color:#000;
+    word-wrap:break-word;overflow-wrap:anywhere;
+  }
+
+  /* Column widths */
+  #reportTable col:nth-child(1){width:15%;}   /* Name */
+  #reportTable col:nth-child(2){width:7.5%;}  /* Gender */
+  #reportTable col:nth-child(3),
+  #reportTable col:nth-child(4),
+  #reportTable col:nth-child(5),
+  #reportTable col:nth-child(6){width:6%;}    /* perf cols */
+  #reportTable col:nth-child(7){width:20%;}   /* Comments */
+  #reportTable col:nth-child(8){width:30%;}   /* Report Generated */
+  #reportTable col:nth-child(9){width:9.5%;}  /* Actions */
+
+  /* Completed row highlight (stronger specificity) */
+  #reportTable tbody tr.row-completed{background:#d4edda !important;}
+
+  /* Radios small & left */
+  .perf-options{padding-left:.25rem;}
+  .perf-options .form-check{display:inline-block;margin-right:.5rem;}
+  .perf-options .form-check-input{transform:scale(.85);margin-right:.2rem;}
+  .perf-options .form-check-label{font-size:.78rem;}
+
+  .bottom-bar{display:flex;align-items:center;gap:.5rem;margin-top:.75rem;}
+</style>
+
+<div class="container-fluid py-3"><!-- fluid so table can span full width -->
+
+  <!-- Controls -->
+  <div class="controls-row">
+    <label for="classInput">Class:</label>
+    <input id="classInput" type="text" class="form-control form-control-sm" placeholder="">
+
+    <label for="subjectInput" class="ms-3">Subject:</label>
+    <input id="subjectInput" type="text" class="form-control form-control-sm" placeholder="">
+
+    <label class="ms-3">Load:</label>
+    <select id="savedClassSelect" class="form-select form-select-sm" style="width:14rem;">
+      <option value="">— Select saved class —</option>
+    </select>
+
+    <button id="saveClassBtn" class="btn btn-outline-secondary btn-sm ms-2" title="Save Class + Subject + Max Words + Rows">
+      💾 Save class
+    </button>
+    <button id="newClassBtn" class="btn btn-outline-warning btn-sm" title="Start a new, empty class">
+      ⎚ New class
+    </button>
+
+    <div class="right-pack ms-auto">
+      <label for="wordCountRange" class="me-1">Max Words:</label>
+      <input id="wordCountRange" type="range" class="form-range form-range-sm" min="30" max="100" step="10" value="100">
+      <span id="wordCountLabel" class="small">100</span>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <table id="reportTable" class="table table-bordered">
+    <colgroup><col><col><col><col><col><col><col><col><col></colgroup>
+    <thead>
+      <tr>
+        <th>Name</th><th>Gender</th>
+        <th>Class tests</th><th>Homework</th><th>Organisation</th><th>Participation</th>
+        <th>Comments</th><th>Report Generated</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="reportTbody"></tbody>
+  </table>
+
+  <!-- Row template -->
+  <template id="rowTemplate">
+    <tr>
+      <td contenteditable="true" class="name-cell"></td>
+      <td contenteditable="true" class="gender-cell"></td>
+
+      <td class="perf-options">
+        <label class="form-check me-2"><input class="form-check-input" type="radio" value="Low"> <span class="form-check-label">Low</span></label>
+        <label class="form-check me-2"><input class="form-check-input" type="radio" value="Ok"> <span class="form-check-label">Ok</span></label>
+        <label class="form-check me-2"><input class="form-check-input" type="radio" value="Good"> <span class="form-check-label">Good</span></label>
+        <label class="form-check"><input class="form-check-input" type="radio" value="Great"> <span class="form-check-label">Great</span></label>
+      </td>
+      <td class="perf-options">
+        <label class="form-check me-2"><input class="form-check-input" type="radio" value="Low"> <span class="form-check-label">Low</span></label>
+        <label class="form-check me-2"><input class="form-check-input" type="radio" value="Ok"> <span class="form-check-label">Ok</span></label>
+        <label class="form-check me-2"><input class="form-check-input" type="radio" value="Good"> <span class="form-check-label">Good</span></label>
+        <label class="form-check"><input class="form-check-input" type="radio" value="Great"> <span class="form-check-label">Great</span></label>
+      </td>
+      <td class="perf-options">
+        <label class="form-check me-2"><input class="form-check-input" type="radio" value="Low"> <span class="form-check-label">Low</span></label>
+        <label class="form-check me-2"><input class="form-check-input" type="radio" value="Ok"> <span class="form-check-label">Ok</span></label>
+        <label class="form-check me-2"><input class="form-check-input" type="radio" value="Good"> <span class="form-check-label">Good</span></label>
+        <label class="form-check"><input class="form-check-input" type="radio" value="Great"> <span class="form-check-label">Great</span></label>
+      </td>
+      <td class="perf-options">
+        <label class="form-check me-2"><input class="form-check-input" type="radio" value="Low"> <span class="form-check-label">Low</span></label>
+        <label class="form-check me-2"><input class="form-check-input" type="radio" value="Ok"> <span class="form-check-label">Ok</span></label>
+        <label class="form-check me-2"><input class="form-check-input" type="radio" value="Good"> <span class="form-check-label">Good</span></label>
+        <label class="form-check"><input class="form-check-input" type="radio" value="Great"> <span class="form-check-label">Great</span></label>
+      </td>
+
+      <td contenteditable="true" class="comments-cell"></td>
+      <td class="report-cell"></td>
+      <td>
+        <button class="btn btn-primary btn-sm generate-btn" title="Generate report">Generate report</button>
+        <button class="btn btn-outline-secondary btn-sm copy-btn" title="Copy report">Copy report</button>
+      </td>
+    </tr>
+  </template>
+
+  <!-- Bottom actions -->
+  <div class="bottom-bar">
+    <button id="addRow" class="btn btn-outline-primary btn-sm">+ Add row</button>
+    <button id="genAll" class="btn btn-success btn-sm">Generate report for all</button>
+    <button id="copyAll" class="btn btn-outline-secondary btn-sm">Copy entire report</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  /* ------- DOM refs ------- */
+  const tbody    = document.getElementById('reportTbody');
+  const tpl      = document.getElementById('rowTemplate');
+  const range    = document.getElementById('wordCountRange');
+  const wordLbl  = document.getElementById('wordCountLabel');
+  const savedSel = document.getElementById('savedClassSelect');
+
+  /* ------- header helpers ------- */
+  function updateWordLabel(){ wordLbl.textContent = range.value; }
+  range.addEventListener('input', updateWordLabel);
+
+  /* ------- radios (single select per column per row) ------- */
+  let rowCounter = 1;
+  function setRadioGroupNames(row){
+    const id = 'r' + (rowCounter++);
+    [{i:2,n:`tests-${id}`},{i:3,n:`homework-${id}`},{i:4,n:`organisation-${id}`},{i:5,n:`participation-${id}`}]
+      .forEach(g => row.cells[g.i].querySelectorAll('input[type="radio"]').forEach(r => r.name = g.n));
+  }
+  function getSelected(cell){
+    const x = cell.querySelector('input[type="radio"]:checked');
+    return x ? x.value : '';
+  }
+
+  /* ------- row lifecycle ------- */
+  function attachRowEvents(row){
+    const genBtn = row.querySelector('.generate-btn');
+    const copyBtn= row.querySelector('.copy-btn');
+
+    genBtn.onclick = async () => {
+      const tr = genBtn.closest('tr'); // ensure we target the <tr>
+      const payload = {
+        name: tr.querySelector('.name-cell').textContent.trim(),
+        gender: tr.querySelector('.gender-cell').textContent.trim(),
+        tests: getSelected(tr.cells[2]),
+        homework: getSelected(tr.cells[3]),
+        organisation: getSelected(tr.cells[4]),
+        participation: getSelected(tr.cells[5]),
+        comments: tr.querySelector('.comments-cell').textContent.trim(),
+        class: document.getElementById('classInput').value,
+        subject: document.getElementById('subjectInput').value,
+        max_words: range.value
+      };
+      try{
+        const res = await fetch('/generate_report', {
+          method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)
+        });
+        const js = await res.json();
+        if(js.error) throw new Error(js.error);
+
+        tr.querySelector('.report-cell').textContent = js.report || '';
+        tr.classList.add('row-completed'); // ✅ turn this row light green
+        addRow(); // convenience: add a fresh empty row
+      }catch(err){
+        alert('Generate failed: ' + err.message);
+      }
+    };
+
+    copyBtn.onclick = () => {
+      navigator.clipboard.writeText(row.querySelector('.report-cell').textContent.trim());
+    };
+  }
+
+  function addRow(prefill=null){
+    const frag = tpl.content.cloneNode(true);
+    tbody.appendChild(frag);
+    const row = tbody.lastElementChild;
+
+    // clear & prefill
+    row.classList.remove('row-completed');
+    row.querySelectorAll('td[contenteditable="true"]').forEach(td => td.textContent='');
+    row.querySelectorAll('input[type="radio"]').forEach(r => r.checked=false);
+    row.querySelector('.report-cell').textContent='';
+
+    if(prefill){
+      row.querySelector('.name-cell').textContent   = prefill.name   || '';
+      row.querySelector('.gender-cell').textContent = prefill.gender || '';
+      ['tests','homework','organisation','participation'].forEach((k,offset)=>{
+        const v = (prefill[k]||'').toLowerCase();
+        if(v) row.cells[2+offset].querySelectorAll('input[type="radio"]').forEach(r=>{
+          if(r.value.toLowerCase()===v) r.checked=true;
+        });
+      });
+      row.querySelector('.comments-cell').textContent = prefill.comments || '';
+      if (prefill.report){
+        row.querySelector('.report-cell').textContent = prefill.report;
+        row.classList.add('row-completed');
+      }
+    }
+
+    setRadioGroupNames(row);
+    attachRowEvents(row);
+    return row;
+  }
+
+  /* ------- bulk actions ------- */
+  document.getElementById('addRow').onclick = () => addRow();
+
+  document.getElementById('genAll').onclick = async () => {
+    const cls = document.getElementById('classInput').value;
+    const sub = document.getElementById('subjectInput').value;
+    const max = range.value;
+
+    for(const row of Array.from(tbody.querySelectorAll('tr'))){
+      if(row.querySelector('.report-cell').textContent.trim()) continue;
+      const payload = {
+        name: row.querySelector('.name-cell').textContent.trim(),
+        gender: row.querySelector('.gender-cell').textContent.trim(),
+        tests: getSelected(row.cells[2]),
+        homework: getSelected(row.cells[3]),
+        organisation: getSelected(row.cells[4]),
+        participation: getSelected(row.cells[5]),
+        comments: row.querySelector('.comments-cell').textContent.trim(),
+        class: cls, subject: sub, max_words: max
+      };
+      try{
+        const res = await fetch('/generate_report', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+        const js  = await res.json();
+        if(js.error) throw new Error(js.error);
+        row.querySelector('.report-cell').textContent = js.report || '';
+        row.classList.add('row-completed');
+      }catch(e){ console.warn('Bulk row failed:', e); }
+    }
+    addRow();
+  };
+
+  document.getElementById('copyAll').onclick = () => {
+    let txt = 'Name\tGender\tReport Generated\n';
+    tbody.querySelectorAll('tr').forEach(r=>{
+      txt += [
+        r.querySelector('.name-cell').textContent.trim(),
+        r.querySelector('.gender-cell').textContent.trim(),
+        r.querySelector('.report-cell').textContent.trim()
+      ].join('\t') + '\n';
+    });
+    navigator.clipboard.writeText(txt);
+  };
+
+  /* ------- save/load profiles (with rows) ------- */
+  async function refreshSavedClasses(){
+    try{
+      const res = await fetch('/class_profiles');
+      if(!res.ok) return;
+      const list = await res.json();
+      savedSel.innerHTML = '<option value="">— Select saved class —</option>';
+      list.forEach(it=>{
+        const opt = document.createElement('option');
+        opt.value = it.id;
+        opt.textContent = `${it.class_name} — ${it.subject} (${it.max_words})`;
+        savedSel.appendChild(opt);
+      });
+    }catch(e){ console.warn('list load failed', e); }
+  }
+
+  async function loadSelectedClassProfile(id){
+    if(!id) return;
+    try{
+      const res = await fetch(`/class_profile/${id}/full`);
+      if(!res.ok) return;
+      const cp = await res.json();
+
+      // header
+      document.getElementById('classInput').value   = cp.class_name || '';
+      document.getElementById('subjectInput').value = cp.subject    || '';
+      range.value = cp.max_words || 100; updateWordLabel();
+
+      // rows
+      while(tbody.firstChild) tbody.removeChild(tbody.firstChild);
+      if(cp.rows && cp.rows.length){
+        cp.rows.forEach(r => addRow({
+          name:r.name, gender:r.gender, tests:r.tests, homework:r.homework,
+          organisation:r.organisation, participation:r.participation,
+          comments:r.comments, report:r.report
+        }));
+      }else{
+        addRow();
+      }
+    }catch(e){ console.warn('load failed', e); }
+  }
+
+  document.getElementById('saveClassBtn').onclick = async () => {
+    const cls = document.getElementById('classInput').value.trim();
+    const sub = document.getElementById('subjectInput').value.trim();
+    const max = range.value;
+    if(!cls || !sub) return alert('Please fill Class and Subject.');
+
+    const rows = Array.from(tbody.querySelectorAll('tr')).map(r => ({
+      name: r.querySelector('.name-cell').textContent.trim(),
+      gender: r.querySelector('.gender-cell').textContent.trim(),
+      tests: getSelected(r.cells[2]),
+      homework: getSelected(r.cells[3]),
+      organisation: getSelected(r.cells[4]),
+      participation: getSelected(r.cells[5]),
+      comments: r.querySelector('.comments-cell').textContent.trim(),
+      report: r.querySelector('.report-cell').textContent.trim()
+    }));
+
+    try{
+      const res = await fetch('/class_profile/save', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ class: cls, subject: sub, max_words: max, rows })
+      });
+      if(!res.ok){
+        const err = await res.json().catch(()=>({error:'Save failed'}));
+        return alert(err.error || 'Save failed.');
+      }
+      await res.json();
+      await refreshSavedClasses();
+      alert('Class saved.');
+    }catch(e){ alert('Save failed.'); }
+  };
+
+  document.getElementById('newClassBtn').onclick = () => {
+    document.getElementById('classInput').value = '';
+    document.getElementById('subjectInput').value = '';
+    range.value = 100; updateWordLabel();
+    while(tbody.firstChild) tbody.removeChild(tbody.firstChild);
+    addRow(); // ensure one editable row
+  };
+
+  savedSel.addEventListener('change', e => loadSelectedClassProfile(e.target.value));
+
+  /* ------- initial boot ------- */
+  updateWordLabel();
+  addRow();            // ensure a row is visible immediately after login
+  refreshSavedClasses();
+})();
+</script>
+{% endblock %}

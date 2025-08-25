@@ -1,0 +1,66 @@
+/* Navbar */
+.navbar-custom {
+  background: linear-gradient(90deg, #0b2a6b, #284ea6);
+}
+.navbar-custom .navbar-brand,
+.navbar-custom .nav-link { color: #fff !important; }
+.navbar-custom .navbar-brand.brandmark {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  font-size: 1.25rem;
+}
+.navbar-custom .btn.btn-cta {
+  background: #ffd166;
+  color: #1f1f1f;
+  border: none;
+}
+.navbar-custom .btn.btn-cta:hover { filter: brightness(0.95); }
+
+/* Footer */
+.footer { background: #0b2a6b; }
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, #284ea6 0%, #0b2a6b 60%, #09224f 100%);
+  color: #fff;
+}
+.hero-accent { color: #ffd166; }
+.hero-card img { object-fit: cover; }
+
+/* Sub-hero for School */
+.sub-hero {
+  background: linear-gradient(135deg, #4a63c6 0%, #284ea6 60%, #0b2a6b 100%);
+  color: #fff;
+}
+
+/* Tiles */
+.tile {
+  background: #fff;
+  border: 1px solid #e8ecf3;
+  border-radius: 12px;
+  padding: 1.2rem;
+}
+.tile h5 { margin-bottom: .35rem; }
+.tile-icon { font-size: 1.4rem; margin-bottom: .35rem; }
+
+/* Quotes */
+.quote {
+  background: #ffffff;
+  border: 1px dashed #e1e6f2;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  font-style: italic;
+}
+.quote .who { font-style: normal; color: #6c757d; margin-top: .5rem; }
+
+/* Pricing */
+.pricing-hero { background: #fff; }
+.pricing-card { border: 1px solid #e8ecf3; border-radius: 12px; }
+.pricing-card.featured { border-width: 2px; border-color: #284ea6; }
+.btn-cta {
+  background: #ffd166; color: #1f1f1f; border: none;
+}
+.btn-cta:hover { filter: brightness(0.95); }
+
+/* General */
+section { scroll-margin-top: 80px; }
