@@ -1,39 +1,36 @@
+# render.yaml
 services:
   - type: web
-    name: report-rocket-web
+    name: report-rocket
     env: python
-    region: frankfurt
-    plan: starter
+    region: oregon         # match the region you chose for Postgres
+    plan: starter          # free works for testing, starter is recommended
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app --workers=2 --threads=4 --timeout=120
-    healthCheckPath: /
-    autoDeploy: true
-
     envVars:
-      - key: PYTHON_VERSION         # Pin Python so deps stay stable
-        value: 3.11
       - key: SECRET_KEY
         generateValue: true
-      - key: OPENAI_API_KEY         # set in Render Dashboard
-        sync: false
+      - key: OPENAI_API_KEY
+        sync: false        # set this in Render dashboard (Environment tab)
       - key: FLASK_ENV
         value: production
-      - key: DATABASE_URL
+      - key: DATABASE_URL   # this will be filled automatically by the DB block below
         fromDatabase:
           name: report-rocket-db
           property: connectionString
+    healthCheckPath: /
+    autoDeploy: true
 
-    # Persist CSV exports between deploys/restarts
-    disk:
-      name: exports
-      mountPath: /opt/render/project/src/exports
-      sizeGB: 1
-
-    # Create tables on first deploys (idempotent)
+    # Create tables after each successful deploy
     postDeployCommand: >
-      python -c "from app import app, db; from models import *;
-      app.app_context().push(); db.create_all(); print('DB tables created')"
+      python -c "from app import app; from models import db; 
+      import os; 
+      with app.app_context(): 
+          db.create_all(); 
+          print('✅ DB tables ensured')"
 
 databases:
   - name: report-rocket-db
+    databaseName: report_rocket    # optional; Render will generate one if omitted
+    region: oregon
     plan: starter
