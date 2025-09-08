@@ -12,6 +12,10 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    plan = db.Column(db.String(20), default="free")  # "free", "teacher", "school", etc.
+    reports_used = db.Column(db.Integer, default=0)
+    reports_limit = db.Column(db.Integer, nullable=True, default=10)
+
     def set_password(self, pw): self.password_hash = generate_password_hash(pw)
     def check_password(self, pw): return check_password_hash(self.password_hash, pw)
 

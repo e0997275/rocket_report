@@ -3,34 +3,64 @@ services:
   - type: web
     name: report-rocket
     env: python
-    region: oregon         # match the region you chose for Postgres
-    plan: starter          # free works for testing, starter is recommended
+    pythonVersion: 3.12.5
+    region: oregon                # keep this aligned with your DB region
+    plan: starter                 # bump as needed
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --workers=2 --threads=4 --timeout=120
+    startCommand: gunicorn --bind 0.0.0.0:$PORT app:app --workers=2 --threads=4 --timeout=120
+
     envVars:
       - key: SECRET_KEY
         generateValue: true
-      - key: OPENAI_API_KEY
-        sync: false        # set this in Render dashboard (Environment tab)
+
+      - key: OPENAI_API_KEY       # set in Render -> Environment
+        sync: false
+
+      # Optional email (set in Render if you use SendGrid)
+      - key: SENDGRID_API_KEY
+        sync: false
+      - key: FROM_EMAIL
+        value: no-reply@report-rocket.com
+
       - key: FLASK_ENV
         value: production
-      - key: DATABASE_URL   # this will be filled automatically by the DB block below
+      - key: FLASK_APP            # so `flask db` works in postDeploy
+        value: app.py
+
+      # Render injects this from the database defined below
+      - key: DATABASE_URL
         fromDatabase:
           name: report-rocket-db
           property: connectionString
+
     healthCheckPath: /
     autoDeploy: true
 
-    # Create tables after each successful deploy
-    postDeployCommand: >
-      python -c "from app import app; from models import db; 
-      import os; 
-      with app.app_context(): 
-          db.create_all(); 
-          print('✅ DB tables ensured')"
+    # After each successful build, migrate DB (or create tables if no migrations yet)
+    postDeployCommand: |
+      set -e
+      echo "🔧 Post-deploy: applying database migrations…"
+      if [ -d "migrations" ]; then
+        flask db upgrade || (
+          echo "⚠️ flask db upgrade failed, falling back to create_all()"
+          python - <<'PY'
+from app import app
+from models import db
+with app.app_context():
+    db.create_all()
+    print("✅ Tables ensured via create_all()")
+PY
+        )
+      else
+        echo "ℹ️ No migrations folder; initializing Alembic and creating first migration."
+        flask db init
+        flask db migrate -m "initial schema"
+        flask db upgrade
+      fi
+      echo "✅ Post-deploy complete."
 
 databases:
   - name: report-rocket-db
-    databaseName: report_rocket    # optional; Render will generate one if omitted
+    databaseName: report_rocket          # optional; Render can auto-generate
     region: oregon
     plan: starter
