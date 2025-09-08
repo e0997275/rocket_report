@@ -43,11 +43,15 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret")
 
 # Prefer Postgres (Render), fall back to local SQLite
 db_url = os.getenv("DATABASE_URL", "sqlite:///site.db")
+
+# Normalize Render's URL for psycopg3
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql+psycopg://", 1)
 elif db_url.startswith("postgresql://"):
+    # if they gave us postgresql:// without driver, add psycopg
     db_url = db_url.replace("postgresql://", "postgresql+psycopg://", 1)
 
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 
 
 app.config["SQLALCHEMY_DATABASE_URI"] = db_url
