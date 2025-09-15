@@ -16,7 +16,7 @@ convention = {
 db = SQLAlchemy(metadata=MetaData(naming_convention=convention))
 
 class User(db.Model, UserMixin):
-    __tablename__ = "users"   # <-- not "user"
+    __tablename__ = "user"   # <-- not "user"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False, index=True)
     password_hash = db.Column(db.String(255), nullable=False)
