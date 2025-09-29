@@ -1,66 +1,45 @@
-/* Navbar */
-.navbar-custom {
-  background: linear-gradient(90deg, #0b2a6b, #284ea6);
-}
-.navbar-custom .navbar-brand,
-.navbar-custom .nav-link { color: #fff !important; }
-.navbar-custom .navbar-brand.brandmark {
-  font-weight: 700;
-  letter-spacing: 0.3px;
-  font-size: 1.25rem;
-}
-.navbar-custom .btn.btn-cta {
-  background: #ffd166;
-  color: #1f1f1f;
-  border: none;
-}
-.navbar-custom .btn.btn-cta:hover { filter: brightness(0.95); }
-
-/* Footer */
-.footer { background: #0b2a6b; }
-
-/* Hero */
-.hero {
-  background: linear-gradient(135deg, #284ea6 0%, #0b2a6b 60%, #09224f 100%);
-  color: #fff;
-}
-.hero-accent { color: #ffd166; }
-.hero-card img { object-fit: cover; }
-
-/* Sub-hero for School */
-.sub-hero {
-  background: linear-gradient(135deg, #4a63c6 0%, #284ea6 60%, #0b2a6b 100%);
-  color: #fff;
+:root {
+  --max-content: 1100px;
 }
 
-/* Tiles */
-.tile {
-  background: #fff;
-  border: 1px solid #e8ecf3;
-  border-radius: 12px;
-  padding: 1.2rem;
-}
-.tile h5 { margin-bottom: .35rem; }
-.tile-icon { font-size: 1.4rem; margin-bottom: .35rem; }
+body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; line-height:1.5; color:#111; }
+.site-header, .site-footer { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem 1.25rem; border-bottom:1px solid #eee; }
+.site-footer { border-top:1px solid #eee; border-bottom:none; margin-top:3rem; }
+.brand { font-weight:700; text-decoration:none; color:inherit; }
+.nav a { margin-left:1rem; text-decoration:none; }
+.cta { display:inline-block; padding:.7rem 1rem; border-radius:.75rem; background:#111; color:#fff; text-decoration:none; }
+.cta.lg { padding:1rem 1.25rem; font-weight:600; }
 
-/* Quotes */
-.quote {
-  background: #ffffff;
-  border: 1px dashed #e1e6f2;
-  border-radius: 12px;
-  padding: 1rem 1.2rem;
-  font-style: italic;
-}
-.quote .who { font-style: normal; color: #6c757d; margin-top: .5rem; }
+main { max-width: var(--max-content); margin: 0 auto; padding: 1.25rem; }
 
-/* Pricing */
-.pricing-hero { background: #fff; }
-.pricing-card { border: 1px solid #e8ecf3; border-radius: 12px; }
-.pricing-card.featured { border-width: 2px; border-color: #284ea6; }
-.btn-cta {
-  background: #ffd166; color: #1f1f1f; border: none;
-}
-.btn-cta:hover { filter: brightness(0.95); }
+.hero { padding: 3rem 0 1rem; text-align:center; }
+.hero h1 { font-size: clamp(1.75rem, 3vw + 1rem, 3rem); margin: 0 0 .5rem; }
+.hero p { margin: 0 0 1rem; }
 
-/* General */
-section { scroll-margin-top: 80px; }
+.features, .how-it-works, .social-proof { padding: 2rem 0; }
+.features ul, .how-it-works ol { max-width:800px; margin:0 auto; }
+
+.auth-wrap { display:grid; place-items:center; min-height: calc(100dvh - 160px); padding: 2rem 1rem; }
+.auth-card {
+  width: min(460px, 33vw);       /* ≈ one-third of viewport, capped for readability */
+  min-width: 300px;              /* don’t get too small on phones */
+  background: #fff; padding: 1.25rem; border:1px solid #eee; border-radius: 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,.04);
+}
+.auth-card h1 { margin-top:0; }
+.auth-card label { display:block; margin:.75rem 0 .25rem; font-weight:600; }
+.auth-card input {
+  width:100%; padding:.7rem .8rem; border-radius:.6rem; border:1px solid #ddd;
+}
+.auth-card button { width:100%; margin-top:1rem; }
+
+.pricing { max-width:900px; margin:0 auto; text-align:center; padding:2rem 0; }
+.plan { border:1px solid #eee; border-radius:1rem; padding:1.5rem; position:relative; }
+.badge {
+  position:absolute; top:-12px; left:50%; transform:translateX(-50%);
+  background:#0a0; color:#fff; padding:.3rem .6rem; border-radius:.5rem; font-size:.85rem;
+}
+.price { font-size:1.5rem; font-weight:700; }
+.muted { color:#666; }
+.small { font-size:.9rem; }
+.site-footer a { text-decoration:none; }
