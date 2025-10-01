@@ -1,106 +1,59 @@
 {% extends "base.html" %}
-{% block title %}Pricing for Teachers & Schools | MyApp{% endblock %}
+{% block title %}Pricing — Report Rocket{% endblock %}
 {% block content %}
-<link rel="canonical" href="{{ url_for('pricing', _external=True) }}">
-<meta name="description" content="Teachers start free, then pay-as-you-go from as little as £2.50. School trials available.">
 
-<style>
-  .pricing-hero { background:#f5f7ff; border-radius:16px; }
-  .price-card .price { font-size:2rem; font-weight:700; }
-  .price-card small { color:#6c757d; }
-  .tick { color:#198754; }
-</style>
+<section class="container pricing">
+  <h1>Simple pricing that starts with a Free Trial</h1>
+  <p class="muted">Test everything with the free trial. Upgrade when you’re ready.</p>
 
-
-<div class="card shadow-sm">
-  <div class="card-body">
-    <h5 class="card-title">Free</h5>
-    <p class="card-text mb-1"><strong>£0</strong></p>
-    <p class="text-muted">10 reports included</p>
-    <ul>
-      <li>All core features</li>
-      <li>No credit card required</li>
-    </ul>
-    <a class="btn btn-outline-primary" href="{{ url_for('register') }}?plan=free">Start free</a>
-  </div>
-</div>
-
-
-<div class="container py-4">
-  <section class="pricing-hero p-4 p-md-5 mb-4">
-    <h1 class="mb-2">Teachers</h1>
-    <p class="lead mb-1">Get <strong>10 reports free</strong> when you sign up, then pay as you go from as little as £2.50.</p>
-    <p class="mb-0">Refer your pals and get more reports free.</p>
-  </section>
-
-  <div class="mb-3 d-none">
-    <!-- placeholder if you later add currency switching -->
-    <label class="me-2">Currency:</label>
-    <select class="form-select form-select-sm" style="width: 10rem;">
-      <option selected>GBP (£)</option>
-    </select>
-  </div>
-
-  <div class="row g-4">
-    <!-- £2.50 pack -->
-    <div class="col-md-4">
-      <div class="price-card border rounded p-4 h-100">
-        <div class="price">£2.50</div>
-        <div class="mb-2"><small>Pack</small></div>
-        <ul class="list-unstyled small mb-3">
-          <li><span class="tick">✔</span> Reports in pack: <strong>50</strong></li>
-          <li><span class="tick">✔</span> Cost per report: <strong>5p</strong></li>
-          <li><span class="tick">✔</span> Approx per class: <strong>£1.50</strong></li>
-        </ul>
-        <a href="{{ url_for('report') }}" class="btn btn-primary w-100">Get started</a>
-      </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="badge">Free Trial</div>
+      <h3>Try it first</h3>
+      <p class="price">£0</p>
+      <ul>
+        <li>Full access to report generation</li>
+        <li>Create sample class profiles</li>
+        <li>No credit card required</li>
+      </ul>
+      <a class="btn btn-primary" href="{{ url_for('register') }}">Start Free Trial</a>
     </div>
-    <!-- £5 pack -->
-    <div class="col-md-4">
-      <div class="price-card border rounded p-4 h-100">
-        <div class="price">£5</div>
-        <div class="mb-2"><small>Pack</small></div>
-        <ul class="list-unstyled small mb-3">
-          <li><span class="tick">✔</span> Reports in pack: <strong>150</strong></li>
-          <li><span class="tick">✔</span> Cost per report: <strong>4p</strong></li>
-          <li><span class="tick">✔</span> Approx per class: <strong>£1.00</strong></li>
-        </ul>
-        <a href="{{ url_for('report') }}" class="btn btn-primary w-100">Choose pack</a>
-      </div>
+
+    <div class="price-card featured">
+      <div class="badge">Most Popular</div>
+      <h3>Teacher</h3>
+      <p class="price">£<span class="num">X</span>/month</p>
+      <ul>
+        <li>Unlimited reports</li>
+        <li>Saved templates & targets</li>
+        <li>Email support</li>
+      </ul>
+      <a class="btn btn-primary" href="{{ url_for('register') }}">Continue after Trial</a>
     </div>
-    <!-- £10 pack -->
-    <div class="col-md-4">
-      <div class="price-card border rounded p-4 h-100">
-        <div class="price">£10</div>
-        <div class="mb-2"><small>Pack</small></div>
-        <ul class="list-unstyled small mb-3">
-          <li><span class="tick">✔</span> Reports in pack: <strong>500</strong></li>
-          <li><span class="tick">✔</span> Cost per report: <strong>2p</strong></li>
-          <li><span class="tick">✔</span> Approx per class: <strong>£0.60</strong></li>
-        </ul>
-        <a href="{{ url_for('report') }}" class="btn btn-primary w-100">Best value</a>
-      </div>
+
+    <div class="price-card">
+      <h3>School</h3>
+      <p class="price">Custom</p>
+      <ul>
+        <li>Multiple seats</li>
+        <li>Shared templates</li>
+        <li>Onboarding & priority support</li>
+      </ul>
+      <a class="btn btn-ghost" href="mailto:rocket.report.fast@gmail.com">Contact sales</a>
     </div>
   </div>
 
-  <hr class="my-5">
+  <div class="faq">
+    <h2>FAQ</h2>
+    <details>
+      <summary>What happens after the free trial?</summary>
+      <p>You can upgrade to Teacher or School at any time. Your saved work remains available.</p>
+    </details>
+    <details>
+      <summary>Do I need a credit card for the trial?</summary>
+      <p>No. Sign up and start generating reports immediately.</p>
+    </details>
+  </div>
+</section>
 
-  <section>
-    <h2 class="h4 mb-3">Schools</h2>
-    <p class="mb-3">Want your whole staff on board? We offer discounted school packs and a free trial for one full term.</p>
-    <a class="btn btn-outline-primary" href="{{ url_for('school') }}">School trial & pricing</a>
-  </section>
-</div>
-
-<!-- FAQ schema to help rich results -->
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"FAQPage",
-  "mainEntity":[
-    {"@type":"Question","name":"Do teachers get free reports?","acceptedAnswer":{"@type":"Answer","text":"Yes. You get 10 reports free when you sign up."}},
-    {"@type":"Question","name":"Is there a school trial?","acceptedAnswer":{"@type":"Answer","text":"Yes, schools can trial the service free for one term."}}
-  ]
-}
-</script>
 {% endblock %}

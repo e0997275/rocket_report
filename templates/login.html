@@ -14,4 +14,17 @@
     </div>
     {{ form.submit(class="btn btn-primary") }}
   </form>
+  <section class="auth-wrap">
+  <div class="auth-card">
+    <h1>Sign in</h1>
+    <form method="post" action="{{ url_for('login') }}">
+      <label>Email</label>
+      <input type="email" name="email" required />
+      <label>Password</label>
+      <input type="password" name="password" required />
+      <button class="btn btn-primary" type="submit">Sign in</button>
+    </form>
+    <p class="muted">No account? <a href="{{ url_for('register') }}">Start your free trial</a></p>
+  </div>
+  </section>
 {% endblock %}

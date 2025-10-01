@@ -1,33 +1,66 @@
 {% extends "base.html" %}
-{% block title %}Report Rocket – AI Reports for Teachers{% endblock %}
+{% block title %}Report Rocket — AI Reporting for Class Profiles{% endblock %}
 {% block content %}
-<section class="hero">
-  <h1>Write Parent Reports 10× Faster</h1>
-  <p>Report Rocket turns class notes into polished reports in minutes.</p>
-  <a class="cta lg" href="{{ url_for('register') }}">Start Free Trial</a>
+
+<section class="hero container">
+  <div class="hero-content">
+    <h1>Turn classroom data into polished reports in minutes</h1>
+    <p>Report Rocket helps teachers and tutors generate consistent, parent-friendly reports from notes, scores, and observations—fast.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Start Free Trial</a>
+      <a class="btn btn-ghost" href="{{ url_for('pricing') }}">See Pricing</a>
+    </div>
+    <p class="tiny-note">Free trial. No commitment.</p>
+  </div>
 </section>
 
-<section class="features">
-  <h2>Why Report Rocket?</h2>
-  <ul>
-    <li><strong>Reduce workload:</strong> Turn bullet points into full reports.</li>
-    <li><strong>Consistent tone:</strong> Friendly, professional, and accurate.</li>
-    <li><strong>Custom templates:</strong> Match your school’s style.</li>
+<section class="container features">
+  <h2>Why Report Rocket</h2>
+  <div class="grid-3">
+    <div class="card">
+      <h3>One-click draft</h3>
+      <p>Paste your notes or upload a CSV; get a clean, structured report ready to share.</p>
+    </div>
+    <div class="card">
+      <h3>Consistent tone</h3>
+      <p>Keep language professional and supportive across every report, automatically.</p>
+    </div>
+    <div class="card">
+      <h3>Time saver</h3>
+      <p>Cut report writing time from hours to minutes—focus on teaching, not formatting.</p>
+    </div>
+  </div>
+</section>
+
+<section class="container how-it-works">
+  <h2>How it works</h2>
+  <ol class="steps">
+    <li><strong>Import</strong> notes, bullet points, or results.</li>
+    <li><strong>Customize</strong> templated sections (progress, strengths, targets).</li>
+    <li><strong>Generate</strong> a polished report you can download or copy.</li>
+  </ol>
+</section>
+
+<section class="container use-cases">
+  <h2>Built for real classrooms</h2>
+  <ul class="bullets">
+    <li>Individual student or whole-class profiles</li>
+    <li>Parent updates and term summaries</li>
+    <li>Target tracking and next steps</li>
   </ul>
 </section>
 
-<section class="how-it-works">
-  <h2>How it works</h2>
-  <ol>
-    <li>Create a class profile</li>
-    <li>Add student notes</li>
-    <li>Generate & export reports</li>
-  </ol>
-  <a class="cta" href="{{ url_for('register') }}">Try it free</a>
+<section class="container testimonials">
+  <h2>What educators say</h2>
+  <blockquote>
+    “I produced 30 reports in one evening. Clear, kind, and consistent.” — Year 6 Teacher
+  </blockquote>
 </section>
 
-<section class="social-proof">
-  <h2>Loved by busy teachers</h2>
-  <p>(Add quotes or logos here.)</p>
+<section class="container cta-banner">
+  <h2>Try it free</h2>
+  <p>Create your first class profile now.</p>
+  <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Start Free Trial</a>
 </section>
+
 {% endblock %}
