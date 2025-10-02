@@ -5,15 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{% block title %}Report Rocket{% endblock %}</title>
 
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <!-- Favicon -->
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+
+  <!-- Site styles -->
   <link rel="stylesheet" href="{{ url_for('static', filename='site.css') }}" />
 </head>
 <body>
+  <!-- Header / Navbar -->
   <header class="site-header">
     <div class="container header-inner">
-      <a class="brand" href="{{ url_for('index') }}">Report Rocket</a>
+      <a class="brand" href="{{ url_for('home') }}">Report Rocket</a>
       <nav class="nav">
-        <a href="{{ url_for('index') }}">Home</a>
+        <a href="{{ url_for('home') }}">Home</a>
         <a href="{{ url_for('pricing') }}">Pricing</a>
         {% if current_user.is_authenticated %}
           <a href="{{ url_for('report') }}">Dashboard</a>
@@ -26,13 +30,15 @@
     </div>
   </header>
 
+  <!-- Page Content -->
   <main>
     {% block content %}{% endblock %}
   </main>
 
+  <!-- Footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
-      <div>© {{  now().year if now is defined else '' }} Report Rocket</div>
+      <div>© {{ now().year if now is defined else '' }} Report Rocket</div>
       <div><a href="mailto:rocket.report.fast@gmail.com">Contact us</a></div>
     </div>
   </footer>
