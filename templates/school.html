@@ -1,73 +1,139 @@
 {% extends "base.html" %}
-{% block title %}Schools | Free Trial & Pricing | MyApp{% endblock %}
+{% block title %}Schools — Report Rocket{% endblock %}
+
 {% block content %}
-<link rel="canonical" href="{{ url_for('school', _external=True) }}">
-<meta name="description" content="Free term-long trial for schools. Standardise report quality and save staff time. Request a free trial in minutes.">
 
-<style>
-  .school-hero { background:#f5f7ff; border-radius:16px; }
-</style>
 
-<div class="container py-4">
-  <section class="school-hero p-4 p-md-5 mb-4">
-    <h1 class="mb-2">Free trial for schools</h1>
-    <p class="lead mb-0">We’re so confident your school will love MyApp that we offer a free trial for one term.</p>
-  </section>
+<section class="school-benefits rr-container">
+  <h2 class="section-title">Why schools choose Report Rocket</h2>
+  <div class="cards">
+    <article class="card">
+      <div class="icon">🧭</div>
+      <h3>Shared rubrics & tone</h3>
+      <p>Upload guidance once—every teacher’s comments follow your school’s expectations automatically.</p>
+    </article>
+    <article class="card">
+      <div class="icon">⚡</div>
+      <h3>Faster, not generic</h3>
+      <p>Short, specific comments per student based on your criteria—no fluff, no copy-paste.</p>
+    </article>
+    <article class="card">
+      <div class="icon">🔐</div>
+      <h3>Privacy by design</h3>
+      <p>We minimize data, avoid unnecessary retention, and let you export locally at any time.</p>
+    </article>
+    <article class="card">
+      <div class="icon">📦</div>
+      <h3>One-click exports</h3>
+      <p>Export per class, year group, or whole school. CSV/Docx options tailored for your MIS flow.</p>
+    </article>
+  </div>
+</section>
 
-  <div class="row g-4">
-    <div class="col-lg-6">
-      <h2 class="h5">How it works</h2>
-      <ul>
-        <li>Full access for one term for your chosen staff.</li>
-        <li>Shared class templates and consistent tone across reports.</li>
-        <li>Help with onboarding and best‑practice prompts.</li>
-      </ul>
+<section class="how rr-container">
+  <h2 class="section-title">How it works</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="badge">1</div>
+      <h4>Set school defaults</h4>
+      <p>Upload tone guidance, grade descriptors, and comment length once. Choose subjects & year groups.</p>
     </div>
-    <div class="col-lg-6">
-      <h2 class="h5 mb-3">Request a free trial</h2>
-      <form method="post" action="{{ url_for('school_trial') }}" class="border rounded p-3">
-        <div class="mb-2">
-          <label class="form-label">Name</label>
-          <input name="name" class="form-control" required>
-        </div>
-        <div class="mb-2">
-          <label class="form-label">Role</label>
-          <input name="role" class="form-control" required>
-        </div>
-        <div class="mb-2">
-          <label class="form-label">Email</label>
-          <input name="email" type="email" class="form-control" required>
-        </div>
-        <div class="mb-2">
-          <label class="form-label">School Website</label>
-          <input name="website" type="url" class="form-control" placeholder="https://">
-        </div>
-        <div class="mb-3">
-          <label class="form-label">English Variant</label>
-          <select name="variant" class="form-select">
-            <option>British English</option>
-            <option>American English</option>
-            <option>Australian English</option>
-            <option>Canadian English</option>
-          </select>
-        </div>
-        <div class="form-check mb-3">
-          <input class="form-check-input" type="checkbox" id="terms" name="terms" required>
-          <label class="form-check-label" for="terms">I accept the free trial terms</label>
-        </div>
-        <button class="btn btn-primary">Request a Free Trial</button>
-      </form>
+    <div class="step">
+      <div class="badge">2</div>
+      <h4>Teachers add class data</h4>
+      <p>Simple grid for names, performance notes, and teacher comments. No training required.</p>
+    </div>
+    <div class="step">
+      <div class="badge">3</div>
+      <h4>Generate & review</h4>
+      <p>Reports are generated per student with your school’s voice. Edit inline and lock when approved.</p>
+    </div>
+    <div class="step">
+      <div class="badge">4</div>
+      <h4>Export & share</h4>
+      <p>Export to CSV/Docx, or copy directly into your MIS. Admins see progress across departments.</p>
     </div>
   </div>
-</div>
+</section>
 
-<!-- Organization schema -->
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"Organization",
-  "name":"MyApp",
-  "url":"{{ url_for('home', _external=True) }}"
-}
-</script>
+<section class="quotes rr-container">
+  <div class="q-grid">
+    <figure class="quote">
+      <blockquote>
+        “We cut reporting week from five days to two afternoons without losing quality. SLT loved the consistent tone.”
+      </blockquote>
+      <figcaption>— Assistant Head, UK Secondary</figcaption>
+    </figure>
+    <figure class="quote">
+      <blockquote>
+        “Teachers actually stopped dreading report season. The editing controls are brilliant for subject-specific nuance.”
+      </blockquote>
+      <figcaption>— Head of English, International School</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="demo" class="school-form rr-container">
+  <div class="form-wrap">
+    <h2 class="section-title">Request a school trial</h2>
+    <p class="form-sub">We’ll set up a shared workspace for your team and send next steps.</p>
+    <form method="post" action="{{ url_for('school_trial') }}">
+      <div class="f-row">
+        <div class="f-col">
+          <label for="name">Your name</label>
+          <input id="name" name="name" type="text" placeholder="Alex Johnson" required />
+        </div>
+        <div class="f-col">
+          <label for="role">Role</label>
+          <input id="role" name="role" type="text" placeholder="Head of Year" required />
+        </div>
+      </div>
+
+      <div class="f-row">
+        <div class="f-col">
+          <label for="email">Work email</label>
+          <input id="email" name="email" type="email" placeholder="name@school.edu" required />
+        </div>
+        <div class="f-col">
+          <label for="website">School website</label>
+          <input id="website" name="website" type="url" placeholder="https://your-school.edu" />
+        </div>
+      </div>
+
+      <div class="f-row">
+        <div class="f-col">
+          <label for="variant">Deployment size</label>
+          <select id="variant" name="variant">
+            <option>1–2 departments</option>
+            <option>Whole school</option>
+            <option>Multi-academy trust</option>
+          </select>
+        </div>
+        <div class="f-col">
+          <label>&nbsp;</label>
+          <label class="ck">
+            <input type="checkbox" name="terms" required />
+            I agree to the <a href="{{ url_for('terms') }}">Terms</a> &amp; <a href="{{ url_for('privacy') }}">Privacy</a>.
+          </label>
+        </div>
+      </div>
+
+      <div class="f-actions">
+        <button class="btn btn-primary" type="submit">Request trial</button>
+        <a class="btn btn-ghost" href="{{ url_for('pricing') }}">Compare plans</a>
+      </div>
+    </form>
+    <p class="tiny-note">We’ll only use your details to arrange the trial—no spam, ever.</p>
+  </div>
+</section>
+
+<section class="closing rr-container">
+  <div class="closing-card">
+    <h3>Ready to make report season calm again?</h3>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#demo">Get started</a>
+      <a class="btn btn-ghost" href="{{ url_for('pricing') }}">See pricing</a>
+    </div>
+  </div>
+</section>
 {% endblock %}

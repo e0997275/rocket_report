@@ -36,7 +36,7 @@ class User(db.Model, UserMixin):
 class ClassProfile(db.Model):
     __tablename__ = "class_profiles"
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False, index=True)
     class_name = db.Column(db.String(120), nullable=False)
     subject = db.Column(db.String(120), nullable=False)
     max_words = db.Column(db.Integer, default=50, nullable=False)  # or 50 if you changed default

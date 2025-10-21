@@ -1,18 +1,29 @@
 {% extends "base.html" %}
-{% block title %}Create your account – Report Rocket{% endblock %}
+{% block title %}Register – Report Rocket{% endblock %}
+
 {% block content %}
 <section class="auth-wrap">
-  <div class="auth-card">
+  <form method="post" class="auth-card">
+    {{ form.hidden_tag() }}
     <h1>Create your account</h1>
-    <form method="post" action="{{ url_for('register') }}">
-      <!-- your CSRF & fields -->
-      <label>Email</label>
-      <input type="email" name="email" required>
-      <label>Password</label>
-      <input type="password" name="password" required>
-      <button class="cta" type="submit">Start Free Trial</button>
-    </form>
-    <p class="muted">Already have an account? <a href="{{ url_for('login') }}">Sign in</a></p>
-  </div>
+
+    <div class="form-group">
+      <label for="email">{{ form.email.label }}</label>
+      {{ form.email(id="email", placeholder="name@example.com", class="input") }}
+      {% for e in form.email.errors %}<div class="error">{{ e }}</div>{% endfor %}
+    </div>
+
+    <div class="form-group">
+      <label for="password">{{ form.password.label }}</label>
+      {{ form.password(id="password", placeholder="••••••••", class="input") }}
+      {% for e in form.password.errors %}<div class="error">{{ e }}</div>{% endfor %}
+    </div>
+
+    {{ form.submit(class="btn btn-primary btn-block") }}
+
+    <p class="muted">Already have an account?
+      <a href="{{ url_for('login') }}">Sign in</a>
+    </p>
+  </form>
 </section>
 {% endblock %}

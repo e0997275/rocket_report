@@ -1,59 +1,54 @@
 {% extends "base.html" %}
 {% block title %}Pricing — Report Rocket{% endblock %}
+
 {% block content %}
-
-<section class="container pricing">
-  <h1>Simple pricing that starts with a Free Trial</h1>
-  <p class="muted">Test everything with the free trial. Upgrade when you’re ready.</p>
-
-  <div class="pricing-grid">
-    <div class="price-card">
-      <div class="badge">Free Trial</div>
-      <h3>Try it first</h3>
-      <p class="price">£0</p>
-      <ul>
-        <li>Full access to report generation</li>
-        <li>Create sample class profiles</li>
-        <li>No credit card required</li>
-      </ul>
-      <a class="btn btn-primary" href="{{ url_for('register') }}">Start Free Trial</a>
-    </div>
-
-    <div class="price-card featured">
-      <div class="badge">Most Popular</div>
-      <h3>Teacher</h3>
-      <p class="price">£<span class="num">X</span>/month</p>
-      <ul>
-        <li>Unlimited reports</li>
-        <li>Saved templates & targets</li>
-        <li>Email support</li>
-      </ul>
-      <a class="btn btn-primary" href="{{ url_for('register') }}">Continue after Trial</a>
-    </div>
-
-    <div class="price-card">
-      <h3>School</h3>
-      <p class="price">Custom</p>
-      <ul>
-        <li>Multiple seats</li>
-        <li>Shared templates</li>
-        <li>Onboarding & priority support</li>
-      </ul>
-      <a class="btn btn-ghost" href="mailto:rocket.report.fast@gmail.com">Contact sales</a>
-    </div>
-  </div>
-
-  <div class="faq">
-    <h2>FAQ</h2>
-    <details>
-      <summary>What happens after the free trial?</summary>
-      <p>You can upgrade to Teacher or School at any time. Your saved work remains available.</p>
-    </details>
-    <details>
-      <summary>Do I need a credit card for the trial?</summary>
-      <p>No. Sign up and start generating reports immediately.</p>
-    </details>
+<section class="price-hero">
+  <div class="container">
+    <h1 class="ph-title">Choose the right plan for your classroom</h1>
+    <p class="ph-sub">Whether you need 10 or 1000 reports — Report Rocket makes it fast, accurate, and simple.</p>
   </div>
 </section>
 
+<section class="pricing-grid">
+  <div class="container grid-4">
+    {% for p in plans %}
+    <div class="plan {% if p.is_featured %}featured{% endif %} {% if p.slug == 'free' %}plan-free{% endif %}">
+      {% if p.is_featured %}
+        <div class="badge">Most Popular</div>
+      {% endif %}
+      <h3 class="plan-name">{{ p.name }}</h3>
+
+      <div class="plan-price">
+        {% if p.price == 0 %}
+          <span class="price">Free</span>
+        {% else %}
+          <span class="price">GBP {{ "%.2f"|format(p.price) }}</span>
+          <span class="per">/month</span>
+        {% endif %}
+      </div>
+
+      <div class="plan-meta">
+        {% if p.period == 'monthly' %}
+          {{ p.limit }} reports per month
+        {% else %}
+          {{ p.limit }} reports total
+        {% endif %}
+      </div>
+
+      <a class="btn btn-primary btn-block" href="{{ p.cta.href }}">{{ p.cta.text }}</a>
+
+      <ul class="features">
+        {% for f in p.features %}
+        <li>✓ {{ f }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="container center nudge">
+    <a class="btn btn-ghost" href="{{ url_for('register') }}">Start for Free</a>
+    <a class="btn btn-link" href="{{ url_for('home') }}">Back to Home</a>
+  </div>
+</section>
 {% endblock %}

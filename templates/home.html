@@ -1,66 +1,184 @@
 {% extends "base.html" %}
-{% block title %}Report Rocket — AI Reporting for Class Profiles{% endblock %}
+{% block title %}Report Rocket — AI-Powered Student Reports{% endblock %}
+
 {% block content %}
 
-<section class="hero container">
-  <div class="hero-content">
-    <h1>Turn classroom data into polished reports in minutes</h1>
-    <p>Report Rocket helps teachers and tutors generate consistent, parent-friendly reports from notes, scores, and observations—fast.</p>
-    <div class="cta-row">
-      <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Start Free Trial</a>
-      <a class="btn btn-ghost" href="{{ url_for('pricing') }}">See Pricing</a>
+<!-- HERO -->
+<section class="rr-hero">
+  <div class="rr-hero-bg"></div>
+  <div class="rr-container rr-hero-inner">
+    <div class="rr-hero-eyebrow">NEW · Built with teachers</div>
+    <h1 class="rr-hero-title">Write polished student reports in minutes</h1>
+    <p class="rr-hero-sub">
+      Turn quick notes into clear, professional comments. Keep your tone, stay consistent,
+      and finish a whole class fast.
+    </p>
+    <div class="rr-cta">
+      <a class="rr-btn rr-btn-primary rr-btn-lg" href="{{ url_for('register') }}">Start Free</a>
+      <a class="rr-btn rr-btn-ghost rr-btn-lg" href="{{ url_for('pricing') }}">View Pricing</a>
     </div>
-    <p class="tiny-note">Free trial. No commitment.</p>
+    <p class="rr-hero-footnote">No credit card for trial · Export to CSV</p>
   </div>
 </section>
 
-<section class="container features">
-  <h2>Why Report Rocket</h2>
-  <div class="grid-3">
-    <div class="card">
-      <h3>One-click draft</h3>
-      <p>Paste your notes or upload a CSV; get a clean, structured report ready to share.</p>
-    </div>
-    <div class="card">
-      <h3>Consistent tone</h3>
-      <p>Keep language professional and supportive across every report, automatically.</p>
-    </div>
-    <div class="card">
-      <h3>Time saver</h3>
-      <p>Cut report writing time from hours to minutes—focus on teaching, not formatting.</p>
+<!-- TRUST BAR -->
+<section class="rr-trust">
+  <div class="rr-container rr-trust-inner">
+    <span>Loved by teachers in</span>
+    <div class="rr-badges">
+      <span class="rr-badge">Primary</span>
+      <span class="rr-badge">Secondary</span>
+      <span class="rr-badge">International</span>
+      <span class="rr-badge">SEN</span>
     </div>
   </div>
 </section>
 
-<section class="container how-it-works">
-  <h2>How it works</h2>
-  <ol class="steps">
-    <li><strong>Import</strong> notes, bullet points, or results.</li>
-    <li><strong>Customize</strong> templated sections (progress, strengths, targets).</li>
-    <li><strong>Generate</strong> a polished report you can download or copy.</li>
-  </ol>
+<!-- VALUE PROPS -->
+<section class="rr-section">
+  <div class="rr-container">
+    <h2 class="rr-h2">Why Report Rocket?</h2>
+    <p class="rr-section-sub">Fast, consistent and personal — without starting from scratch every time.</p>
+
+    <div class="rr-grid-3">
+      <div class="rr-card">
+        <div class="rr-ico">⚡</div>
+        <h3>Lightning fast</h3>
+        <p>Generate class comments in one sitting, then tweak individual lines instantly.</p>
+      </div>
+      <div class="rr-card">
+        <div class="rr-ico">🎯</div>
+        <h3>Your voice, kept</h3>
+        <p>Guide style once. We keep suggestions clear, professional and encouraging.</p>
+      </div>
+      <div class="rr-card">
+        <div class="rr-ico">📝</div>
+        <h3>Notes → great drafts</h3>
+        <p>Use short bullets for tests, homework, participation — we turn them into readable comments.</p>
+      </div>
+    </div>
+
+    <div class="rr-grid-3">
+      <div class="rr-card">
+        <div class="rr-ico">📊</div>
+        <h3>Consistent & fair</h3>
+        <p>Same standards across students with room for your professional judgement.</p>
+      </div>
+      <div class="rr-card">
+        <div class="rr-ico">🔍</div>
+        <h3>Edit-friendly</h3>
+        <p>Regenerate, shorten, or make it more specific — right from the same screen.</p>
+      </div>
+      <div class="rr-card">
+        <div class="rr-ico">📤</div>
+        <h3>Export ready</h3>
+        <p>Export to CSV or copy/paste. Works with your MIS — no lock-in.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section class="container use-cases">
-  <h2>Built for real classrooms</h2>
-  <ul class="bullets">
-    <li>Individual student or whole-class profiles</li>
-    <li>Parent updates and term summaries</li>
-    <li>Target tracking and next steps</li>
-  </ul>
+<!-- HERO VIDEO -->
+<section class="rr-section rr-screenshot">
+  <div class="rr-container">
+    <div class="rr-hero-video">
+      <video
+        id="heroVideo"
+        autoplay
+        loop
+        muted
+        playsinline
+        preload="metadata"
+        controls
+        poster="{{ url_for('static', filename='poster.jpg') }}"
+      >
+        <source src="{{ url_for('static', filename='hero.mp4') }}" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <p class="rr-muted center m-top-8">
+      Short demo of Report Rocket in action.
+    </p>
+  </div>
 </section>
 
-<section class="container testimonials">
-  <h2>What educators say</h2>
-  <blockquote>
-    “I produced 30 reports in one evening. Clear, kind, and consistent.” — Year 6 Teacher
-  </blockquote>
+<!-- HOW IT WORKS -->
+<section class="rr-section rr-how">
+  <div class="rr-container">
+    <h2 class="rr-h2">How it works</h2>
+    <div class="rr-steps">
+      <div class="rr-step">
+        <div class="rr-step-n">1</div>
+        <h4>Start a class</h4>
+        <p>Type or paste your student list.</p>
+      </div>
+      <div class="rr-step">
+        <div class="rr-step-n">2</div>
+        <h4>Add brief notes</h4>
+        <p>Tests, homework, participation, organisation and your own comments.</p>
+      </div>
+      <div class="rr-step">
+        <div class="rr-step-n">3</div>
+        <h4>Generate drafts</h4>
+        <p>Get concise, specific comments in seconds — in your tone.</p>
+      </div>
+      <div class="rr-step">
+        <div class="rr-step-n">4</div>
+        <h4>Export & share</h4>
+        <p>Export CSV or copy directly to your report system.</p>
+      </div>
+    </div>
+    <div class="center m-top-8">
+      <a class="rr-btn rr-btn-primary" href="{{ url_for('register') }}">Try it free</a>
+      <a class="rr-btn rr-btn-link" href="{{ url_for('pricing') }}">See pricing →</a>
+    </div>
+  </div>
 </section>
 
-<section class="container cta-banner">
-  <h2>Try it free</h2>
-  <p>Create your first class profile now.</p>
-  <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Start Free Trial</a>
+<!-- SUBJECT USE CASES -->
+<section class="rr-section rr-use">
+  <div class="rr-container">
+    <h2 class="rr-h2">Works across subjects</h2>
+    <div class="rr-grid-3">
+      <div class="rr-tile">
+        <h4>English & Humanities</h4>
+        <p>Clarity, structure and progress across essays and projects.</p>
+      </div>
+      <div class="rr-tile">
+        <h4>Maths & Science</h4>
+        <p>Evidence-based comments from tests, labs and practicals.</p>
+      </div>
+      <div class="rr-tile">
+        <h4>PE, Arts & Languages</h4>
+        <p>Participation, effort and skill development captured quickly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="rr-section rr-dark">
+  <div class="rr-container">
+    <h2 class="rr-h2 light">What teachers say</h2>
+    <div class="rr-grid-3">
+      <blockquote class="rr-quote">“Cut my reporting time by more than half — the tone is spot on.”<span>— Year 6 Teacher</span></blockquote>
+      <blockquote class="rr-quote">“Consistent yet personal. Editing is quick and intuitive.”<span>— Head of Science</span></blockquote>
+      <blockquote class="rr-quote">“Exactly the help I needed at the end of term. Exports perfectly.”<span>— Secondary Teacher</span></blockquote>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="rr-final">
+  <div class="rr-container rr-final-inner">
+    <h2>Ready to finish reports on time?</h2>
+    <p>Start free. Upgrade when you’re ready.</p>
+    <div class="rr-cta">
+      <a class="rr-btn rr-btn-primary rr-btn-lg" href="{{ url_for('register') }}">Start Free</a>
+      <a class="rr-btn rr-btn-ghost rr-btn-lg" href="{{ url_for('pricing') }}">View Pricing</a>
+    </div>
+  </div>
 </section>
 
 {% endblock %}

@@ -2,7 +2,6 @@
 # -----------------------------------------
 # Report Rocket – Flask application entry
 # -----------------------------------------
-from flask_migrate import Migrate
 
 import os
 import csv
@@ -16,23 +15,52 @@ from flask_login import (
     LoginManager, login_user, login_required, logout_user, current_user
 )
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 
-# --- Your app modules ---
-from models import db, User, ClassProfile
+# Forms & Models
+from forms import RegistrationForm, LoginForm
+from models import db, User
 try:
-    # Optional child-row model; we handle both with/without it
-    from models import ClassRow
+    from models import ClassProfile
+except Exception:
+    ClassProfile = None
+
+try:
+    from models import ClassRow  # optional child-row model
 except Exception:
     ClassRow = None
 
-from forms import RegistrationForm, LoginForm
+# Optional OpenAI (safe if not configured)
+try:
+    from openai import OpenAI
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
+    openai_client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
+except Exception:
+    openai_client = None
 
-# --- OpenAI (v1 SDK) ---
-from openai import OpenAI
+# Optional Email (SendGrid) – best-effort only
+SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY", "").strip()
+FROM_EMAIL = os.getenv("FROM_EMAIL", "no-reply@report-rocket.com")
+try:
+    from sendgrid import SendGridAPIClient
+    from sendgrid.helpers.mail import Mail
+except Exception:
+    SendGridAPIClient = None
+    Mail = None
 
-# --- Optional Email (SendGrid) ---
-from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail
+
+def send_email(to_email: str, subject: str, html: str) -> bool:
+    """Best-effort email; silently no-ops if not configured."""
+    if not (SENDGRID_API_KEY and SendGridAPIClient and Mail):
+        return False
+    try:
+        sg = SendGridAPIClient(SENDGRID_API_KEY)
+        message = Mail(from_email=FROM_EMAIL, to_emails=to_email,
+                       subject=subject, html_content=html)
+        sg.send(message)
+        return True
+    except Exception:
+        return False
 
 
 # =========================================
@@ -42,17 +70,13 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "dev-secret")
 
 # Prefer Postgres (Render), fall back to local SQLite
-db_url = os.getenv("DATABASE_URL", "sqlite:///site.db")
+db_url = os.getenv("DATABASE_URL", "sqlite:///app.db")
 
 # Normalize Render's URL for psycopg3
 if db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql+psycopg://", 1)
-elif db_url.startswith("postgresql://"):
-    # if they gave us postgresql:// without driver, add psycopg
+elif db_url.startswith("postgresql://") and "+psycopg" not in db_url:
     db_url = db_url.replace("postgresql://", "postgresql+psycopg://", 1)
-
-app.config["SQLALCHEMY_DATABASE_URI"] = db_url
-
 
 app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -60,48 +84,152 @@ app.config.setdefault("SQLALCHEMY_ENGINE_OPTIONS", {
     "pool_pre_ping": True,
     "pool_recycle": 300,
 })
+
 db.init_app(app)
-migrate = Migrate(app, db)
+
+# Create tables on import (safe locally and on Render)
+with app.app_context():
+    try:
+        db.create_all()
+    except Exception as e:
+        app.logger.warning(f"db.create_all() failed: {e}")
+
+
+# =========================================
+# Global template vars (brand, etc.)
+# =========================================
+@app.context_processor
+def inject_brand():
+    return {"BRAND": "Report Rocket"}
+
+
+# =========================================
 # Login manager
+# =========================================
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 login_manager.login_message_category = "info"
 
+
 @login_manager.user_loader
 def load_user(user_id: str):
-    return db.session.get(User, int(user_id))
-
-
-# =========================================
-# External services (OpenAI, SendGrid)
-# =========================================
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
-client = OpenAI(api_key=OPENAI_API_KEY) if OPENAI_API_KEY else None
-
-# --- Email (optional) ---
-SENDGRID_API_KEY = os.getenv("SENDGRID_API_KEY")
-FROM_EMAIL = os.getenv("FROM_EMAIL", "no-reply@report-rocket.com")
-
-try:
-    from sendgrid import SendGridAPIClient
-    from sendgrid.helpers.mail import Mail
-except Exception:
-    SendGridAPIClient = None
-    Mail = None
-
-def send_email(to_email: str, subject: str, html: str):
-    if not (SENDGRID_API_KEY and SendGridAPIClient and Mail):
-        # Not configured; just skip silently
-        return False
     try:
-        sg = SendGridAPIClient(SENDGRID_API_KEY)
-        message = Mail(from_email=FROM_EMAIL, to_emails=to_email,
-                       subject=subject, html_content=html)
-        sg.send(message)
-        return True
-    except Exception as e:
-        app.logger.warning(f"Email send failed: {e}")
-        return False
+        return db.session.get(User, int(user_id))
+    except Exception:
+        return None
+
+
+# =========================================
+# Pricing per number of reports (exact spec)
+# =========================================
+# You can rename the internal slugs freely; the limits & prices follow your request.
+PLANS = [
+    {
+        "slug": "free",
+        "name": "Free",
+        "price": 0.00,
+        "limit": 10,
+        "period": "total",  # total lifetime
+        "cta": {"text": "Start Free", "href": "/register?plan=free"},
+        "features": [
+            "10 reports total",
+            "CSV export",
+            "No credit card required",
+        ],
+        "is_featured": False,
+    },
+    {
+        "slug": "basic",
+        "name": "Basic",
+        "price": 1.99,
+        "limit": 30,
+        "period": "monthly",
+        "cta": {"text": "Choose Basic", "href": "/register?plan=basic"},
+        "features": [
+            "30 reports / month",
+            "Fast generation",
+            "CSV export",
+        ],
+        "is_featured": False,
+    },
+    {
+        "slug": "standard",
+        "name": "Standard",
+        "price": 4.99,
+        "limit": 100,
+        "period": "monthly",
+        "cta": {"text": "Choose Standard", "href": "/register?plan=standard"},
+        "features": [
+            "100 reports / month",
+            "Priority generation",
+            "Team-friendly exports",
+        ],
+        "is_featured": True,
+    },
+    {
+        "slug": "pro",
+        "name": "Pro",
+        "price": 9.99,
+        "limit": 1000,
+        "period": "monthly",
+        "cta": {"text": "Choose Pro", "href": "/register?plan=pro"},
+        "features": [
+            "1000 reports / month",
+            "Highest throughput",
+            "Priority support",
+        ],
+        "is_featured": False,
+    },
+]
+
+# Helper lookups
+PLAN_BY_SLUG = {p["slug"]: p for p in PLANS}
+
+
+def current_yyyymm() -> int:
+    """Return YYYYMM as an int, e.g., 202510."""
+    now = datetime.utcnow()
+    return now.year * 100 + now.month
+
+
+def apply_plan(user, slug: str):
+    """Set a user's plan + counters. Works even if optional columns are missing."""
+    plan = PLAN_BY_SLUG.get(slug, PLAN_BY_SLUG["free"])
+    if hasattr(user, "plan"):
+        user.plan = plan["slug"]
+    if hasattr(user, "reports_limit"):
+        user.reports_limit = plan["limit"]
+    if hasattr(user, "reports_used"):
+        user.reports_used = 0
+    # Optional monthly reset tracking column (add to your model if desired)
+    if plan["period"] == "monthly" and hasattr(user, "reports_month"):
+        user.reports_month = current_yyyymm()
+    elif hasattr(user, "reports_month"):
+        user.reports_month = None
+
+
+def maybe_reset_month(user):
+    """
+    If the user's plan is monthly and the month changed, reset counters.
+    This requires an optional `reports_month` Integer column (YYYYMM) on User.
+    If the column isn't present, this safely no-ops.
+    """
+    slug = getattr(user, "plan", "free")
+    plan = PLAN_BY_SLUG.get(slug, PLAN_BY_SLUG["free"])
+    if plan["period"] != "monthly":
+        return
+    if not hasattr(user, "reports_month"):
+        # Can't track month without column; still enforce limit but can't auto reset
+        return
+    yyyymm_now = current_yyyymm()
+    if getattr(user, "reports_month", None) != yyyymm_now:
+        if hasattr(user, "reports_used"):
+            user.reports_used = 0
+        user.reports_month = yyyymm_now
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
 
 
 # =========================================
@@ -115,19 +243,18 @@ os.makedirs(EXPORT_DIR, exist_ok=True)
 # Helpers for ClassProfile rows
 # =========================================
 def _profile_to_dict(profile, include_rows=True):
-    """Return a dict for API responses. Supports either child rows or JSON."""
     out = {
         "id": profile.id,
-        "class_name": profile.class_name,
-        "subject": profile.subject,
-        "max_words": profile.max_words,
+        "class_name": getattr(profile, "class_name", ""),
+        "subject": getattr(profile, "subject", ""),
+        "max_words": getattr(profile, "max_words", 50),
     }
     if not include_rows:
         return out
 
     rows_payload = []
 
-    # Option A: normalized child rows (if present)
+    # Option A: normalized child rows
     if hasattr(profile, "rows") and profile.rows is not None and ClassRow is not None:
         for r in profile.rows:
             rows_payload.append({
@@ -163,14 +290,11 @@ def _profile_to_dict(profile, include_rows=True):
 
 
 def _replace_rows(profile, rows):
-    """Write rows to profile, supporting either child table or JSON column."""
     # Option A: normalized rows
     if hasattr(profile, "rows") and profile.rows is not None and ClassRow is not None:
-        # clear existing children
         for child in list(profile.rows):
             db.session.delete(child)
         db.session.flush()
-        # add new
         for r in rows or []:
             child = ClassRow(
                 profile_id=profile.id,
@@ -201,7 +325,6 @@ def _replace_rows(profile, rows):
             for r in (rows or [])
         ]
     else:
-        # In-memory fallback only (won't persist without a column)
         setattr(profile, "rows_json", rows or [])
 
 
@@ -212,23 +335,44 @@ def _replace_rows(profile, rows):
 def home():
     return render_template("home.html")
 
-@app.route("/pricing")
-def pricing():
-    return render_template("pricing.html")
-
 @app.route("/school", methods=["GET"])
 def school():
     return render_template("school.html")
 
 @app.route("/school-trial", methods=["POST"])
 def school_trial():
-    # Simple capture; later store in DB or send a notification email
-    payload = {k: request.form.get(k, "") for k in
-               ("name", "role", "email", "website", "variant")}
+    """Handle school trial requests from the form on /school."""
+    name = (request.form.get("name") or "").strip()
+    role = (request.form.get("role") or "").strip()
+    email = (request.form.get("email") or "").strip()
+
+    website = (request.form.get("website") or "").strip()
+    variant = (request.form.get("variant") or "").strip()
+    notes = (request.form.get("notes") or "").strip()
     accepted = bool(request.form.get("terms"))
-    app.logger.info("School trial request: %r | accepted terms=%s", payload, accepted)
-    flash("Thanks! We'll be in touch shortly with your trial details.", "success")
+
+    # Log or store; keep it simple for now
+    app.logger.info("School trial: name=%s role=%s email=%s site=%s variant=%s accepted_terms=%s notes=%s",
+                    name, role, email, website, variant, accepted, notes)
+
+    # Optional: email yourself via SendGrid if configured
+    try:
+        send_email(
+            to_email=email,
+            subject="Thanks — Report Rocket school trial",
+            html="<p>Thanks for your request. We’ll be in touch shortly.</p>"
+        )
+    except Exception:
+        pass  # fine if email isn’t configured
+
+    flash("Thanks! We’ll be in touch shortly with your school trial details.", "success")
     return redirect(url_for("school"))
+
+@app.route("/pricing")
+def pricing():
+    # Show Free on the left, Standard highlighted
+    plans_sorted = sorted(PLANS, key=lambda x: 0 if x["slug"] == "free" else 1)
+    return render_template("pricing.html", plans=plans_sorted)
 
 @app.route("/terms")
 def terms():
@@ -240,62 +384,59 @@ def privacy():
 
 
 # =========================================
-# Auth
+# Auth (forms.py backed)
 # =========================================
 @app.route("/register", methods=["GET", "POST"])
 def register():
     form = RegistrationForm()
-
-    # capture ?plan=free|teacher|school from the URL
-    plan = request.args.get("plan", "free")
+    requested_plan = request.args.get("plan", "free")
 
     if form.validate_on_submit():
-        # block duplicate email
-        if User.query.filter_by(email=form.email.data).first():
+        email = form.email.data.lower().strip()
+        if User.query.filter_by(email=email).first():
             flash("Email already registered.", "danger")
-            return redirect(url_for("register", plan=plan))
+            return render_template("register.html", form=form, plan=requested_plan), 400
 
-        user = User(email=form.email.data)
-        user.set_password(form.password.data)
+        user = User(email=email)
+        if hasattr(user, "set_password"):
+            user.set_password(form.password.data)
+        else:
+            user.password_hash = generate_password_hash(form.password.data)
 
-        # Only set plan/limits if those fields exist on your model
-        if hasattr(user, "plan"):
-            user.plan = plan if plan in {"free", "teacher", "school"} else "free"
-        if hasattr(user, "reports_limit"):
-            user.reports_limit = 10 if plan == "free" else None
-        if hasattr(user, "reports_used"):
-            user.reports_used = 0
+        # Apply requested plan (defaults to free)
+        apply_plan(user, requested_plan)
 
         db.session.add(user)
         db.session.commit()
 
-        # (Optional) send welcome email
-        try:
-            send_email(
-                to_email=form.email.data,
-                subject="Welcome to Report Rocket 🚀",
-                html="<p>Your account is ready. Happy reporting!</p>"
-            )
-        except Exception:
-            pass
+        # Auto-login to dashboard
+        login_user(user)
+        flash("Welcome to Report Rocket!", "success")
+        return redirect(url_for("report"))
 
-        flash("Account created — please log in!", "success")
-        return redirect(url_for("login", plan=plan))
-
-    return render_template("register.html", form=form, plan=plan)
+    return render_template("register.html", form=form, plan=requested_plan)
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user and user.check_password(form.password.data):
-            login_user(user)
-            flash("Logged in successfully.", "success")
-            next_page = request.args.get("next")
-            return redirect(next_page or url_for("report"))
-        flash("Invalid email or password.", "danger")
+        email = form.email.data.lower().strip()
+        user = User.query.filter_by(email=email).first()
+        ok = False
+        if user:
+            if hasattr(user, "check_password"):
+                ok = user.check_password(form.password.data)
+            else:
+                ok = check_password_hash(getattr(user, "password_hash", ""), form.password.data)
+
+        if not user or not ok:
+            flash("Invalid email or password.", "danger")
+            return render_template("login.html", form=form), 401
+
+        login_user(user)
+        return redirect(url_for("report"))
+
     return render_template("login.html", form=form)
 
 
@@ -304,7 +445,7 @@ def login():
 def logout():
     logout_user()
     flash("You have been logged out.", "info")
-    return redirect(url_for("login"))
+    return redirect(url_for("home"))
 
 
 # =========================================
@@ -322,18 +463,25 @@ def report():
 @app.route("/generate_report", methods=["POST"])
 @login_required
 def generate_report_api():
-    # Free plan limit enforcement (only if those columns exist)
-    limit = getattr(current_user, "reports_limit", None)
-    used  = getattr(current_user, "reports_used", 0)
-    if limit is not None and used is not None and used >= limit:
-        return jsonify({"error": "Free plan limit reached. Please upgrade to continue generating reports."}), 402
+    # Monthly auto-reset if available
+    maybe_reset_month(current_user)
 
-    if not client:
+    # Enforce plan limit
+    limit = getattr(current_user, "reports_limit", None)
+    used = getattr(current_user, "reports_used", 0)
+    if limit is not None and used is not None and used >= limit:
+        # Clarify if it's total or monthly based on plan
+        slug = getattr(current_user, "plan", "free")
+        period = PLAN_BY_SLUG.get(slug, PLAN_BY_SLUG["free"])["period"]
+        msg = "Report limit reached"
+        msg += " for this month." if period == "monthly" else " for your plan."
+        return jsonify({"error": f"{msg} Please upgrade to continue."}), 402
+
+    if not openai_client:
         return jsonify(error="Server missing OPENAI_API_KEY"), 500
 
     data = request.get_json(silent=True) or {}
-
-    # Default to 50 words unless the client passes something else
+    # Default to 50 words
     max_words = str(data.get("max_words") or 50).strip()
 
     prompt = (
@@ -349,7 +497,7 @@ def generate_report_api():
     )
 
     try:
-        resp = client.chat.completions.create(
+        resp = openai_client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
                 {"role": "system", "content": "You are an experienced school teacher."},
@@ -374,8 +522,8 @@ def generate_report_api():
 def save_report():
     data = request.get_json(silent=True) or {}
     class_name = (data.get("class") or "Class").strip()
-    subject    = (data.get("subject") or "Subject").strip()
-    rows       = data.get("rows") or []
+    subject = (data.get("subject") or "Subject").strip()
+    rows = data.get("rows") or []
 
     base = f"{class_name}_{subject}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
     safe = secure_filename(base)
@@ -400,92 +548,96 @@ def download_export(filename):
     return send_from_directory(EXPORT_DIR, filename, as_attachment=True)
 
 
-# ---------- Class Profiles ----------
-@app.route("/class_profile/save", methods=["POST"])
-@login_required
-def save_class_profile():
-    data = request.json or {}
-    class_name = (data.get("class") or "").strip()
-    subject    = (data.get("subject") or "").strip()
-    max_words  = int(data.get("max_words") or 50)  # default now 50
-    rows       = data.get("rows", [])
+# ---------- Class Profiles (only if model exists) ----------
+if ClassProfile is not None:
 
-    if not class_name or not subject:
-        return jsonify(error="Class and Subject are required"), 400
+    @app.route("/class_profile/save", methods=["POST"])
+    @login_required
+    def save_class_profile():
+        data = request.json or {}
+        class_name = (data.get("class") or "").strip()
+        subject = (data.get("subject") or "").strip()
+        max_words = int(data.get("max_words") or 50)
+        rows = data.get("rows", [])
 
-    # Upsert by (user_id, class_name, subject)
-    existing = (ClassProfile.query
-                .filter_by(user_id=current_user.id,
-                           class_name=class_name,
-                           subject=subject)
-                .first())
+        if not class_name or not subject:
+            return jsonify(error="Class and Subject are required"), 400
 
-    if existing:
-        existing.max_words = max_words
-        # Use helper to support child rows or JSON column
-        _replace_rows(existing, rows)
+        existing = (ClassProfile.query
+                    .filter_by(user_id=current_user.id,
+                               class_name=class_name,
+                               subject=subject)
+                    .first())
+
+        if existing:
+            existing.max_words = max_words
+            _replace_rows(existing, rows)
+            db.session.commit()
+            return jsonify(
+                id=existing.id,
+                class_name=existing.class_name,
+                subject=existing.subject,
+                max_words=existing.max_words,
+                message="UPDATED"
+            ), 200
+
+        cp = ClassProfile(
+            user_id=current_user.id,
+            class_name=class_name,
+            subject=subject,
+            max_words=max_words
+        )
+        db.session.add(cp)
+        db.session.flush()  # ensure cp.id exists for child rows
+        _replace_rows(cp, rows)
+
         db.session.commit()
         return jsonify(
-            id=existing.id,
-            class_name=existing.class_name,
-            subject=existing.subject,
-            max_words=existing.max_words,
-            message="UPDATED"
-        ), 200
+            id=cp.id,
+            class_name=cp.class_name,
+            subject=cp.subject,
+            max_words=cp.max_words,
+            message="CREATED"
+        ), 201
 
-    cp = ClassProfile(
-        user_id=current_user.id,
-        class_name=class_name,
-        subject=subject,
-        max_words=max_words
-    )
-    # Set rows (works for JSON column or child rows)
-    _replace_rows(cp, rows)
+    @app.route("/class_profiles", methods=["GET"])
+    @login_required
+    def list_class_profiles():
+        rows = (ClassProfile.query
+                .filter_by(user_id=current_user.id)
+                .order_by(ClassProfile.id.desc())
+                .all())
+        return jsonify([
+            {"id": r.id, "class_name": r.class_name, "subject": r.subject, "max_words": r.max_words}
+            for r in rows
+        ])
 
-    db.session.add(cp)
-    db.session.commit()
-    return jsonify(
-        id=cp.id,
-        class_name=cp.class_name,
-        subject=cp.subject,
-        max_words=cp.max_words,
-        message="CREATED"
-    ), 201
+    @app.route("/class_profile/<int:cp_id>", methods=["GET"])
+    @login_required
+    def get_class_profile_header(cp_id):
+        cp = ClassProfile.query.filter_by(id=cp_id, user_id=current_user.id).first_or_404()
+        return jsonify(_profile_to_dict(cp, include_rows=False))
 
-
-@app.route("/class_profiles", methods=["GET"])
-@login_required
-def list_class_profiles():
-    rows = (ClassProfile.query
-            .filter_by(user_id=current_user.id)
-            .order_by(ClassProfile.created_at.desc())
-            .all())
-    return jsonify([
-        {"id": r.id, "class_name": r.class_name, "subject": r.subject, "max_words": r.max_words}
-        for r in rows
-    ])
-
-
-@app.route("/class_profile/<int:cp_id>", methods=["GET"])
-@login_required
-def get_class_profile_header(cp_id):
-    cp = ClassProfile.query.filter_by(id=cp_id, user_id=current_user.id).first_or_404()
-    return jsonify(_profile_to_dict(cp, include_rows=False))
-
-
-@app.route("/class_profile/<int:cp_id>/full", methods=["GET"])
-@login_required
-def get_class_profile_full(cp_id):
-    cp = ClassProfile.query.filter_by(id=cp_id, user_id=current_user.id).first_or_404()
-    # Build using helper so both storage modes are supported
-    return jsonify(_profile_to_dict(cp, include_rows=True))
+    @app.route("/class_profile/<int:cp_id>/full", methods=["GET"])
+    @login_required
+    def get_class_profile_full(cp_id):
+        cp = ClassProfile.query.filter_by(id=cp_id, user_id=current_user.id).first_or_404()
+        return jsonify(_profile_to_dict(cp, include_rows=True))
 
 
 # =========================================
-# Local boot
+# Local boot / CLI
 # =========================================
+@app.cli.command("init-db")
+def init_db_command():
+    """flask init-db — create tables and show them."""
+    from sqlalchemy import inspect
+    with app.app_context():
+        db.create_all()
+        print("Tables:", inspect(db.engine).get_table_names())
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    # Local dev server; on Render we use gunicorn
     app.run(debug=True)
