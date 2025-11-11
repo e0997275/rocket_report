@@ -1,181 +1,177 @@
 {% extends "base.html" %}
-{% block title %}Report Rocket — AI Reports for Teachers{% endblock %}
+{% block title %}Report Rocket — AI reports for teachers{% endblock %}
 
 {% block content %}
+
 <!-- HERO -->
-<section class="rr-onecol rr-hero">
-  <h1>Write student reports in minutes, not hours.</h1>
-  <p>Report Rocket turns your bullet points into polished, supportive comments—fast.</p>
-  <div class="rr-cta">
-    <a class="btn btn-primary" href="{{ url_for('register') }}">Start free (10 reports)</a>
-    <a class="btn btn-ghost" href="{{ url_for('pricing') }}">See Pricing</a>
+<section class="rr-hero rr-section--tight">
+  <div class="rr-container hero-grid">
+    <div class="hero-copy">
+      <h1 class="hero-title">Write high-quality student reports in seconds.</h1>
+      <p class="hero-sub">
+        Report Rocket turns your notes into clear, supportive reports — fast. Start free with
+        <strong>10 reports</strong>, upgrade anytime.
+      </p>
+
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="{{ url_for('register') }}">Start free</a>
+        <a class="btn btn-ghost" href="{{ url_for('pricing') }}">See pricing</a>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- VIDEO (replaces the old placeholder box) -->
-<section class="rr-onecol rr-video">
-  <h2 class="sr-only">Product video</h2>
-  <div class="video-frame">
-    <!-- Put your file as /static/hero.mp4 -->
-    <video
-      controls
-      playsinline
-      preload="metadata"
-      muted
-      poster="{{ url_for('static', filename='poster.jpg') }}"
-    >
-      <source src="{{ url_for('static', filename='hero.mp4') }}" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
+<!-- DEMO VIDEO (reduced spacing + full width video) -->
+<section class="rr-section rr-demo rr-section--video">
+  <div class="rr-container center">
+    <div class="media-frame">
+      <video
+        class="hero-video hero-video--big"
+        playsinline
+        muted
+        loop
+        autoplay
+        controls
+        poster="{{ url_for('static', filename='poster.png') }}"
+      >
+        <source src="{{ url_for('static', filename='hero.mp4') }}" type="video/mp4" />
+        Your browser doesn’t support the video tag.
+      </video>
+    </div>
+    <div class="media-caption">Quick demo of generating a report from teacher notes.</div>
   </div>
-  <p class="rr-muted">Tip: name your file <code>static/hero.mp4</code> (and optional <code>static/poster.jpg</code>).</p>
 </section>
 
-<!-- BENEFITS (one per line) -->
-<section class="rr-onecol">
-  <h2>Why teachers choose Report Rocket</h2>
-  <ul class="rr-list">
-    <li>Clear, supportive comments tailored to your class and subject.</li>
-    <li>Consistent voice across all students.</li>
-    <li>Control the length (default 50 words) and tone.</li>
-    <li>Private by design—your data stays in your account.</li>
-    <li>Export to CSV for easy pasting into your school system.</li>
-  </ul>
+<!-- HOW TO USE -->
+<section class="rr-section rr-how rr-section--tight">
+  <div class="rr-container">
+    <h2 class="section-title center">How to use</h2>
+
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Paste notes</h3>
+        <p>Drop test results, homework trends, and quick observations.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Pick length</h3>
+        <p>Choose up to <strong>50 words</strong> by default — change per class.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Generate</h3>
+        <p>Get clear, balanced reports you can export and tweak in seconds.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- HOW IT WORKS (one step per line) -->
-<section class="rr-onecol">
-  <h2>How it works</h2>
-  <ol class="rr-steps">
-    <li>Type each student’s name, quick notes, and scores.</li>
-    <li>Click “Generate report” to get a concise, constructive comment.</li>
-    <li>Review and tweak wording if you’d like.</li>
-    <li>Export your class to CSV and paste where you need it.</li>
-  </ol>
+<!-- WHY YOU'LL LOVE IT -->
+<section class="rr-section rr-features rr-section--tight" style="background: linear-gradient(135deg, #eef3ff, #dae4ff);">
+  <div class="rr-container">
+    <h2 class="section-title center">Why you’ll love it</h2>
+    <ul class="feature-list">
+      <li><span class="tick">✓</span> One click to generate — edit anytime</li>
+      <li><span class="tick">✓</span> Balanced, supportive tone aligned to your subject</li>
+      <li><span class="tick">✓</span> Saves hours every term; consistent across classes</li>
+      <li><span class="tick">✓</span> Private by default — your data stays yours</li>
+    </ul>
+  </div>
 </section>
 
-<!-- CALLOUT (single line message + CTA) -->
-<section class="rr-onecol rr-callout">
-  <p>Start free with 10 total reports—upgrade any time for more monthly reports.</p>
-  <a class="btn btn-primary" href="{{ url_for('register') }}">Create your account</a>
+<!-- TESTIMONIALS -->
+<section class="rr-section rr-testimonials rr-section--tight">
+  <div class="rr-container">
+    <h2 class="section-title center">Teachers love Report Rocket</h2>
+
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-head">
+          <div class="avatar">AM</div>
+          <div>
+            <div class="t-name">Alice M.</div>
+            <div class="t-role">Head of English</div>
+          </div>
+        </div>
+        <p class="t-quote">“Cut my report writing time from a weekend to an afternoon.”</p>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-head">
+          <div class="avatar">JS</div>
+          <div>
+            <div class="t-name">James S.</div>
+            <div class="t-role">Maths Teacher</div>
+          </div>
+        </div>
+        <p class="t-quote">“The 50-word setting is perfect. Concise and accurate feedback.”</p>
+      </div>
+
+      <div class="testi-card">
+        <div class="testi-head">
+          <div class="avatar">RK</div>
+          <div>
+            <div class="t-name">Rina K.</div>
+            <div class="t-role">Science Dept.</div>
+          </div>
+        </div>
+        <p class="t-quote">“Exports and class profiles made our whole department consistent.”</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- FOOTER LINKS (one per line) -->
-<section class="rr-onecol rr-links">
-  <a href="{{ url_for('pricing') }}">Pricing</a>
-  <a href="{{ url_for('school') }}">For Schools</a>
-  <a href="{{ url_for('privacy') }}">Privacy</a>
-  <a href="{{ url_for('terms') }}">Terms</a>
+<!-- FINAL CTA -->
+<section class="rr-cta rr-section--tight">
+  <div class="rr-container cta-box">
+    <h3>Ready to try Report Rocket?</h3>
+    <p>Start free with 10 reports — no card required.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="{{ url_for('register') }}">Start free</a>
+      <a class="btn btn-ghost" href="{{ url_for('pricing') }}">See pricing</a>
+    </div>
+  </div>
 </section>
+
+{% endblock %}
 
 <style>
-  /* Single-column layout & gentle styling */
-  .rr-onecol {
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 28px 20px;
-  }
-  .rr-hero {
-    text-align: center;
-    padding-top: 42px;
-    padding-bottom: 10px;
-  }
-  .rr-hero h1 {
-    font-size: clamp(28px, 5vw, 42px);
-    margin: 0 0 12px;
-    line-height: 1.2;
-  }
-  .rr-hero p {
-    font-size: 18px;
-    color: #4a5568;
-    margin: 0 0 18px;
-  }
-  .rr-cta {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  .btn {
-    display: inline-block;
-    padding: 12px 18px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: 600;
-    border: 1px solid transparent;
-  }
-  .btn-primary {
-    background: #2563eb;
-    color: #fff;
-  }
-  .btn-ghost {
-    background: #fff;
-    color: #2563eb;
-    border-color: #2563eb;
-  }
+/* Reduced general padding for tighter layout */
+.rr-section--tight {
+  padding: 3rem 0 !important;
+}
 
-  .rr-video .video-frame {
-    background: #0b1220;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0,0,0,.08);
-  }
-  .rr-video video {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-  .rr-muted {
-    color: #6b7280;
-    font-size: 14px;
-    margin-top: 10px;
-    text-align: center;
-  }
+/* Even smaller padding just for the video section */
+.rr-section--video {
+  padding: 1.5rem 0 !important;
+}
 
-  .rr-onecol h2 {
-    font-size: 24px;
-    margin: 6px 0 12px;
-  }
-  .rr-list, .rr-steps {
-    margin: 0;
-    padding-left: 20px; /* classic single-column bullets */
-    line-height: 1.7;
-    color: #1f2937;
-  }
-  .rr-list li, .rr-steps li {
-    margin: 6px 0;
-  }
+/* Center container for video */
+.rr-container.center {
+  text-align: center;
+}
 
-  .rr-callout {
-    text-align: center;
-    background: linear-gradient(180deg, #f8fafc, #ffffff);
-    border: 1px solid #e5e7eb;
-    border-radius: 14px;
-  }
-  .rr-callout p {
-    margin: 0 0 10px;
-    font-size: 18px;
-  }
+/* Frame and video styling */
+.media-frame {
+  max-width: 900px;
+  margin: 0 auto;
+  overflow: hidden;
+  border-radius: 1rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
 
-  .rr-links {
-    display: grid;
-    gap: 8px;
-    justify-items: center;
-    border-top: 1px solid #f1f5f9;
-    padding-top: 18px;
-  }
-  .rr-links a {
-    color: #2563eb;
-    text-decoration: none;
-  }
-  .rr-links a:hover { text-decoration: underline; }
+.hero-video--big {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover; /* Removes black side bars */
+  border-radius: 1rem;
+}
 
-  .sr-only {
-    position: absolute;
-    width: 1px; height: 1px;
-    padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0,0,0,0);
-    white-space: nowrap; border: 0;
-  }
+.media-caption {
+  margin-top: 0.75rem;
+  color: #666;
+  font-size: 0.95rem;
+}
 </style>
-{% endblock %}

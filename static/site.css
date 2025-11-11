@@ -210,3 +210,185 @@
 .btn-primary:hover { filter: brightness(0.95); }
 .btn-ghost { background:#fff; color:#0f172a; border-color:#dbe4ee; }
 .btn-ghost:hover { background:#f8fafc; }
+
+
+/* Layout helpers */
+.rr-container { width: min(1120px, 92%); margin: 0 auto; }
+.center { text-align: center; }
+.m-top-8 { margin-top: 2rem; }
+
+/* HERO */
+.rr-hero {
+  background: linear-gradient(135deg, #6e8bff 0%, #a06bff 50%, #ff82a9 100%);
+  color: #fff; padding: 64px 0;
+}
+.hero-grid {
+  display: grid; grid-template-columns: 1.2fr 1fr; gap: 36px; align-items: center;
+}
+.hero-title { font-size: clamp(32px, 5vw, 44px); line-height: 1.1; margin: 0 0 12px; }
+.hero-sub { font-size: 18px; opacity: .95; margin-bottom: 20px; }
+.hero-ctas .btn { margin-right: 10px; }
+.hero-benefits { margin-top: 18px; list-style: none; padding: 0; }
+.hero-benefits li { margin: 8px 0; font-weight: 500; }
+
+/* Video frame */
+.media-frame {
+  background: #0b0f1a; border-radius: 16px; padding: 12px; box-shadow: 0 12px 28px rgba(0,0,0,.25);
+}
+.hero-video { width: 100%; height: auto; border-radius: 10px; display: block; }
+.media-caption { font-size: 13px; opacity: .85; margin-top: 8px; }
+
+/* Buttons (match palette) */
+.btn { display:inline-block; padding: 12px 18px; border-radius: 10px; font-weight:700; text-decoration:none; }
+.btn-primary { background:#111; color:#fff; }
+.btn-primary:hover { filter: brightness(1.05); }
+.btn-ghost { background: transparent; color:#111; border:2px solid #111; }
+.btn-ghost:hover { background:#111; color:#fff; }
+
+/* Sections */
+.rr-section { padding: 56px 0; }
+.section-title { font-size: 28px; margin-bottom: 18px; }
+
+/* Steps */
+.steps-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:18px; }
+.step { background:#fff; border:1px solid #eee; border-radius:14px; padding:18px; }
+.step-num { width:36px;height:36px;border-radius:50%; background:#6e8bff;color:#fff;
+  display:flex;align-items:center;justify-content:center; font-weight:800; margin-bottom:8px; }
+
+/* Features (one per line) */
+.feature-list { list-style:none; padding:0; margin:0 auto; max-width:760px; }
+.feature-list li { display:flex; gap:10px; align-items:flex-start; padding:10px 14px; margin:8px 0;
+  background:#f7f8ff; border:1px solid #e8ebff; border-radius:12px; }
+.tick { font-weight:800; color:#5a6bff; }
+
+/* Testimonials */
+.rr-testimonials { background:#fafafb; }
+.testi-grid { display:grid; grid-template-columns: repeat(3,1fr); gap:18px; }
+.testi-card { background:#fff; border:1px solid #eee; border-radius:14px; padding:18px; box-shadow:0 4px 10px rgba(0,0,0,.03); }
+.testi-head { display:flex; gap:12px; align-items:center; margin-bottom:8px; }
+.avatar { width:40px;height:40px;border-radius:50%; background:#6e8bff; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; }
+.t-name { font-weight:700; }
+.t-role { font-size:12px; opacity:.7; }
+.t-quote { margin:0; }
+
+/* FAQ */
+.faq details { background:#fff; border:1px solid #eee; border-radius:12px; padding:12px 14px; margin:10px 0; }
+.faq summary { cursor:pointer; font-weight:700; }
+
+/* CTA */
+.rr-cta { padding:56px 0; background: linear-gradient(135deg, #ffedf5, #eef0ff); }
+.cta-box { text-align:center; background:#fff; padding:28px; border-radius:16px; border:1px solid #eee; box-shadow:0 10px 24px rgba(0,0,0,.05); }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .hero-grid, .steps-grid, .testi-grid { grid-template-columns: 1fr; }
+}
+
+
+/* NEWWWWWWWWWWWWWWWWWWWWWWW */
+
+/* Tighter vertical rhythm */
+.rr-section { padding: 36px 0; }            /* was 56px */
+.rr-hero { padding: 44px 0; }               /* was 64px */
+.section-title { margin-bottom: 14px; }     /* slightly tighter */
+
+/* Bigger video */
+.hero-video--big { width: 100%; max-height: 520px; }
+.hero-media { align-self: stretch; }        /* let it fill the column */
+.media-frame { padding: 10px; border-radius: 16px; }
+
+/* Steps grid spacing a touch tighter */
+.steps-grid { gap: 14px; }
+.step { padding: 16px; }
+
+/* Feature list spacing tighter */
+.feature-list li { margin: 6px 0; padding: 10px 12px; }
+
+/* Responsive: stack earlier so the big video has room */
+@media (max-width: 1000px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-media { order: 2; }
+}
+
+/* tighter vertical spacing */
+.rr-section { padding: 44px 0; } /* slightly reduced */
+@media (max-width: 960px) { .rr-section { padding: 38px 0; } }
+
+/* larger section titles */
+.rr-sec-title {
+  font-size: clamp(30px, 3.6vw, 40px);
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0 0 16px;
+}
+
+/* large video block */
+.rr-video-wrap {
+  max-width: 1120px;          /* big! */
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 36px rgba(16,24,40,.14);
+  background: #000;
+}
+.rr-video-el {
+  display: block;
+  width: 100%;
+  height: clamp(340px, 58vw, 640px); /* responsive, nice and large */
+}
+
+/* why-you’ll-love-it stylish background */
+.rr-why {
+  background: linear-gradient(180deg, #f5f7ff 0%, #eef2ff 100%);
+  border-top: 1px solid #e7ebff;
+  border-bottom: 1px solid #e7ebff;
+}
+
+/* bullet list styling (if not present already) */
+.rr-bullets { margin: 0; padding-left: 0; list-style: none; line-height: 1.7; }
+.rr-bullets li { margin: 6px 0; }
+
+
+<style>
+/* Global section spacing (tighter overall) */
+.rr-section--tight { padding: 2rem 0 !important; }
+
+/* Video section = extra tight */
+.rr-section--video { padding: 0.75rem 0 !important; }
+
+/* Kill leftover gaps from headings and captions */
+.section-title { margin: 0 0 0.75rem; }
+.media-caption { margin-top: 0.5rem; }
+
+/* Remove extra gap after the hero block */
+.rr-hero { padding-bottom: 1rem !important; }
+
+/* CROPPED VIDEO FRAME — removes visible black sides/top/bottom */
+.media-frame {
+  /* Controls width & radius of the video block */
+  max-width: 960px;
+  margin: 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+
+  /* Maintain a consistent aspect ratio and crop inside */
+  aspect-ratio: 16 / 9;
+  background: #111; /* shown only while loading */
+  position: relative;
+}
+
+/* Make the video fill & crop to the frame */
+.media-frame > video.hero-video--big {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+  object-fit: cover;      /* zooms to hide black bars */
+  object-position: center;/* tweak to 'top center' if needed */
+  border-radius: 0;       /* radius handled by frame */
+}
+
+/* Optional: tighter spacing between all consecutive sections */
+.rr-section + .rr-section { margin-top: 0 !important; }
+</style>
