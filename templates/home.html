@@ -4,18 +4,21 @@
 {% block content %}
 
 <!-- HERO -->
-<section class="rr-hero rr-section--tight">
+<section class="rr-hero rr-section rr-section--tight">
   <div class="rr-container hero-grid">
     <div class="hero-copy">
-      <h1 class="hero-title">Write high-quality student reports in seconds.</h1>
+      <h1 class="hero-title">Write student reports in seconds.</h1>
+
       <p class="hero-sub">
-        Report Rocket turns your notes into clear, supportive reports — fast. Start free with
-        <strong>10 reports</strong>, upgrade anytime.
+        Turn your teacher notes into clear, personalised reports &mdash; instantly.<br>
+        Save hours every week and reduce your workload.
       </p>
 
       <div class="hero-ctas">
         <a class="btn btn-primary" href="{{ url_for('register') }}">Start free</a>
         <a class="btn btn-ghost" href="{{ url_for('pricing') }}">See pricing</a>
+        <!-- Optional: if /report can be used as a demo, keep this; otherwise remove -->
+        <!-- <a class="btn btn-link" href="{{ url_for('report') }}">See a sample report</a> -->
       </div>
     </div>
   </div>
@@ -24,6 +27,8 @@
 <!-- DEMO VIDEO (reduced spacing + full width video) -->
 <section class="rr-section rr-demo rr-section--video">
   <div class="rr-container center">
+    <h2 class="section-title center">See it in action (20 seconds)</h2>
+
     <div class="media-frame">
       <video
         class="hero-video hero-video--big"
@@ -38,7 +43,7 @@
         Your browser doesn’t support the video tag.
       </video>
     </div>
-    <div class="media-caption">Quick demo of generating a report from teacher notes.</div>
+    <div class="media-caption">From raw teacher notes to ready-to-use report comments.</div>
   </div>
 </section>
 
@@ -50,18 +55,18 @@
     <div class="steps-grid">
       <div class="step">
         <div class="step-num">1</div>
-        <h3>Paste notes</h3>
-        <p>Drop test results, homework trends, and quick observations.</p>
+        <h3>Paste your notes</h3>
+        <p>Add observations, grades, behaviour points &mdash; anything you already write.</p>
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <h3>Pick length</h3>
-        <p>Choose up to <strong>50 words</strong> by default — change per class.</p>
+        <h3>Pick the length</h3>
+        <p>Choose short, medium, or up to <strong>100 words</strong>, depending on your school.</p>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <h3>Generate</h3>
-        <p>Get clear, balanced reports you can export and tweak in seconds.</p>
+        <h3>Generate report comments</h3>
+        <p>Get clear, balanced comments you can export or tweak in seconds.</p>
       </div>
     </div>
   </div>
@@ -72,10 +77,10 @@
   <div class="rr-container">
     <h2 class="section-title center">Why you’ll love it</h2>
     <ul class="feature-list">
-      <li><span class="tick">✓</span> One click to generate — edit anytime</li>
-      <li><span class="tick">✓</span> Balanced, supportive tone aligned to your subject</li>
-      <li><span class="tick">✓</span> Saves hours every term; consistent across classes</li>
-      <li><span class="tick">✓</span> Private by default — your data stays yours</li>
+      <li><span class="tick">✓</span> Write reports in a fraction of the time</li>
+      <li><span class="tick">✓</span> Clear, supportive tone matched to your subject</li>
+      <li><span class="tick">✓</span> Consistent comments across all your classes</li>
+      <li><span class="tick">✓</span> Your notes stay private &mdash; never stored or shared with others</li>
     </ul>
   </div>
 </section>
@@ -84,6 +89,9 @@
 <section class="rr-section rr-testimonials rr-section--tight">
   <div class="rr-container">
     <h2 class="section-title center">Teachers love Report Rocket</h2>
+    <p class="center testi-intro" style="max-width: 600px; margin: 0 auto 2rem;">
+      Trusted by teachers across subjects and year groups to speed up report writing.
+    </p>
 
     <div class="testi-grid">
       <div class="testi-card">
@@ -123,10 +131,10 @@
 </section>
 
 <!-- FINAL CTA -->
-<section class="rr-cta rr-section--tight">
+<section class="rr-cta rr-section rr-section--tight">
   <div class="rr-container cta-box">
     <h3>Ready to try Report Rocket?</h3>
-    <p>Start free with 10 reports — no card required.</p>
+    <p>Start free today with 10 reports &mdash; no credit card needed.</p>
     <div class="hero-ctas">
       <a class="btn btn-primary" href="{{ url_for('register') }}">Start free</a>
       <a class="btn btn-ghost" href="{{ url_for('pricing') }}">See pricing</a>
@@ -137,14 +145,29 @@
 {% endblock %}
 
 <style>
+/* Base section spacing + subtle separators */
+.rr-section {
+  padding: 2.5rem 0;
+}
+
+.rr-section + .rr-section {
+  border-top: 1px solid #eee;
+}
+
 /* Reduced general padding for tighter layout */
 .rr-section--tight {
-  padding: 3rem 0 !important;
+  padding: 2.5rem 0 !important;
 }
 
 /* Even smaller padding just for the video section */
 .rr-section--video {
-  padding: 1.5rem 0 !important;
+  padding: 1.75rem 0 !important;
+}
+
+/* Hero text tweaks */
+.hero-sub {
+  margin-top: 1rem;
+  line-height: 1.4;
 }
 
 /* Center container for video */
@@ -165,7 +188,7 @@
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: cover; /* Removes black side bars */
+  object-fit: cover;
   border-radius: 1rem;
 }
 
