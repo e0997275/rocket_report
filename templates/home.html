@@ -7,19 +7,27 @@
 <section class="rr-hero rr-section rr-section--tight">
   <div class="rr-container hero-grid">
     <div class="hero-copy">
-      <h1 class="hero-title">Write student reports in seconds.</h1>
+      <p class="hero-eyebrow">For busy teachers who hate report season</p>
+
+      <h1 class="hero-title">
+        Turn your notes into student report comments in seconds.
+      </h1>
 
       <p class="hero-sub">
-        Turn your teacher notes into clear, personalised reports &mdash; instantly.<br>
-        Save hours every week and reduce your workload.
+        Paste a few lines about a pupil, choose the length, and get
+        clear, personalised comments you can tweak in seconds.<br>
+        Start with <strong>10 free reports</strong> &mdash; no credit card.
       </p>
 
       <div class="hero-ctas">
         <a class="btn btn-primary" href="{{ url_for('register') }}">Start free</a>
         <a class="btn btn-ghost" href="{{ url_for('pricing') }}">See pricing</a>
-        <!-- Optional: if /report can be used as a demo, keep this; otherwise remove -->
-        <!-- <a class="btn btn-link" href="{{ url_for('report') }}">See a sample report</a> -->
       </div>
+
+      <ul class="hero-benefits">
+        <li>Built for UK-style reports and comment banks</li>
+        <li>Works for any subject and year group</li>
+      </ul>
     </div>
   </div>
 </section>
@@ -34,10 +42,9 @@
         class="hero-video hero-video--big"
         playsinline
         muted
-        loop
-        autoplay
         controls
         poster="{{ url_for('static', filename='poster.png') }}"
+        loading="lazy"
       >
         <source src="{{ url_for('static', filename='hero.mp4') }}" type="video/mp4" />
         Your browser doesn’t support the video tag.
