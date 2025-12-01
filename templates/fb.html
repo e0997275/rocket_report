@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Report Rocket — Fast AI Reports for Teachers{% endblock %}
+
+{% block content %}
+
+<section class="rr-hero rr-section" style="padding:40px 0; text-align:center;">
+  <div class="rr-container">
+
+    <h1 class="hero-title" style="font-size:32px; margin-bottom:12px;">
+      Paste your notes. Get full report comments in seconds.
+    </h1>
+
+    <p class="hero-sub" style="max-width:600px; margin:0 auto 20px;">
+      AI-powered comments written in your tone. Save hours this week — no credit card needed.
+    </p>
+
+    <a class="btn btn-primary" href="{{ url_for('register') }}" 
+       style="padding:14px 22px; font-size:18px;">
+      Start free (10 reports)
+    </a>
+
+    <ul style="list-style:none; padding:0; margin:24px auto 0; max-width:400px; text-align:left; font-size:16px;">
+      <li>✓ Built for UK teachers</li>
+      <li>✓ Clear, professional tone</li>
+      <li>✓ Just paste your notes</li>
+      <li>✓ Includes behaviour & grades</li>
+    </ul>
+
+  </div>
+</section>
+
+<section class="rr-section" style="padding:30px 0;">
+  <div class="rr-container">
+
+    <h2 class="section-title" style="font-size:24px;">How it works</h2>
+
+    <div class="steps-grid" style="margin-top:20px;">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h3>Paste notes</h3>
+        <p>Anything you already write for your class.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h3>Choose length</h3>
+        <p>Short, medium, or up to 100 words.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h3>Generate</h3>
+        <p>Instant report comments ready to use.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}

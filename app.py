@@ -208,6 +208,7 @@ def apply_plan(user, slug: str):
         user.reports_month = None
 
 
+
 def maybe_reset_month(user):
     """
     If the user's plan is monthly and the month changed, reset counters.
@@ -381,6 +382,10 @@ def terms():
 @app.route("/privacy")
 def privacy():
     return render_template("privacy.html")
+
+@app.route("/fb")
+def fb():
+    return render_template("fb.html")
 
 
 # =========================================
