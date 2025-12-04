@@ -1,57 +1,103 @@
 {% extends "base.html" %}
-{% block title %}Report Rocket — Fast AI Reports for Teachers{% endblock %}
+{% block title %}Report Rocket — Write student reports in seconds{% endblock %}
 
 {% block content %}
 
-<section class="rr-hero rr-section" style="padding:40px 0; text-align:center;">
-  <div class="rr-container">
+<!-- HERO -->
+<section class="fb-hero">
+  <div class="rr-container fb-hero-inner">
+    <div class="fb-hero-copy">
+      <h1 class="fb-headline">
+        Paste your notes. Get full report comments in seconds.
+      </h1>
 
-    <h1 class="hero-title" style="font-size:32px; margin-bottom:12px;">
-      Paste your notes. Get full report comments in seconds.
-    </h1>
+      <p class="fb-sub">
+        AI-powered comments written in your tone. Save hours this week —
+        <strong>10 free reports, no credit card needed.</strong>
+      </p>
 
-    <p class="hero-sub" style="max-width:600px; margin:0 auto 20px;">
-      AI-powered comments written in your tone. Save hours this week — no credit card needed.
-    </p>
-
-    <a class="btn btn-primary" href="{{ url_for('register') }}" 
-       style="padding:14px 22px; font-size:18px;">
-      Start free (10 reports)
-    </a>
-
-    <ul style="list-style:none; padding:0; margin:24px auto 0; max-width:400px; text-align:left; font-size:16px;">
-      <li>✓ Built for UK teachers</li>
-      <li>✓ Clear, professional tone</li>
-      <li>✓ Just paste your notes</li>
-      <li>✓ Includes behaviour & grades</li>
-    </ul>
-
-  </div>
-</section>
-
-<section class="rr-section" style="padding:30px 0;">
-  <div class="rr-container">
-
-    <h2 class="section-title" style="font-size:24px;">How it works</h2>
-
-    <div class="steps-grid" style="margin-top:20px;">
-      <div class="step">
-        <div class="step-num">1</div>
-        <h3>Paste notes</h3>
-        <p>Anything you already write for your class.</p>
+      <div class="fb-hero-cta">
+        <a href="{{ url_for('register') }}" class="btn btn-primary fb-btn-main">
+          Start free (10 reports)
+        </a>
       </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <h3>Choose length</h3>
-        <p>Short, medium, or up to 100 words.</p>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <h3>Generate</h3>
-        <p>Instant report comments ready to use.</p>
+
+      <ul class="fb-benefits">
+        <li>✓ Built for UK teachers</li>
+        <li>✓ Clear, professional tone</li>
+        <li>✓ Just paste your notes</li>
+        <li>✓ Includes behaviour &amp; grades</li>
+      </ul>
+
+      <div class="fb-trust">
+        Trusted by teachers across subjects and year groups.
       </div>
     </div>
 
+    <!-- MINI DEMO (no video, super fast) -->
+    <div class="fb-demo">
+      <h2 class="fb-demo-title">What it actually does</h2>
+
+      <div class="fb-demo-grid">
+        <div class="fb-card">
+          <div class="fb-card-label">Your notes</div>
+          <p class="fb-card-text">
+            Emma is bright but loses marks for not structuring answers.
+            Homework is usually on time but she sometimes rushes classwork.
+            Very positive in group work.
+          </p>
+        </div>
+
+        <div class="fb-card fb-card-output">
+          <div class="fb-card-label">Generated report comment</div>
+          <p class="fb-card-text">
+            Emma has demonstrated strong understanding of key concepts and
+            contributes well in group work. To reach her full potential she
+            should focus on structuring written answers more carefully and
+            taking a little more time over classwork.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="fb-section fb-how">
+  <div class="rr-container">
+    <h2 class="fb-section-title">How it works</h2>
+
+    <div class="fb-steps">
+      <div class="fb-step">
+        <div class="fb-step-num">1</div>
+        <h3>Paste notes</h3>
+        <p>Anything you already write: grades, behaviour, strengths, targets.</p>
+      </div>
+      <div class="fb-step">
+        <div class="fb-step-num">2</div>
+        <h3>Choose length</h3>
+        <p>Short, medium, or up to 100 words — whatever your school needs.</p>
+      </div>
+      <div class="fb-step">
+        <div class="fb-step-num">3</div>
+        <h3>Generate comments</h3>
+        <p>Instant, balanced comments you can tweak and paste into reports.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="fb-section fb-final">
+  <div class="rr-container fb-final-inner">
+    <h2>Ready to get your weekend back?</h2>
+    <p>
+      Start free with 10 reports today — if it doesn’t save you time, just stop
+      using it. No card required.
+    </p>
+    <a href="{{ url_for('register') }}" class="btn btn-primary fb-btn-main">
+      Start free (10 reports)
+    </a>
   </div>
 </section>
 
